@@ -1,0 +1,4 @@
+.babelrc
+node_modules/
+tailwind.config.js
+webpack.config.js
