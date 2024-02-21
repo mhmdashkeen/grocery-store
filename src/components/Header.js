@@ -19,13 +19,28 @@ const Header = ({cartItems}) => {
             </Link>
             <div className="navbar-nav mr-auto">
                 <li className="nav-item">
+                <Link to={"/"} className="nav-link">
+                    Home
+                </Link>
+                </li>
+                <li className="nav-item">
+                    <Link to={"/categories"} className="nav-link">
+                        Categories
+                    </Link>
+                </li>
+                <li className="nav-item">
                 {loggedInUser?.isAdmin && <Link to={"/add"} className="nav-link">
                     Add
                 </Link>}
                 </li>
                 <li className="nav-item">
-                <Link to={"/"} className="nav-link">
+                <Link to={"/products"} className="nav-link">
                     Products
+                </Link>
+                </li>
+                <li className="nav-item">
+                <Link to={"/orders"} className="nav-link">
+                    Orders
                 </Link>
                 </li>
             </div>
@@ -37,7 +52,7 @@ const Header = ({cartItems}) => {
             {!loggedInUser && <><Link to={"/login"} className="nav-link">
                 Login
             </Link><Link to={"/signup"} className="nav-link">
-                    Signup
+                    Register
                 </Link></>}
             <div className="navbar-nav">
                 <Link to={"/cart"} className="btn btn-secondary">

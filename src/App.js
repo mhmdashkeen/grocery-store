@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { auth } from "./firebase-config";
 import { onAuthStateChanged } from "@firebase/auth";
-import { getUser } from "./slice/Product";
+import { getCart, getUser, signinWithPhone } from "./slice/Product";
 import { toast, ToastContainer } from 'react-toastify';
 import Routing from "./Routing";
 import "./App.css";
@@ -30,6 +30,7 @@ const App = () =>{
                 localStorage.removeItem("userData");
             }
         });
+        dispatch(getCart());
     }, []);
     return (
         <React.Fragment>

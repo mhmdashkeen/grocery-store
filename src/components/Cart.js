@@ -17,9 +17,11 @@ const Cart = ({addRemoveCart, onCheckout}) => {
                                 <div>
                                     <div><b>{cart.name}</b></div>
                                     <div>Price: ${cart.price}</div>
-                                    {onCheckout === undefined ?
-                                    cart.quantity > 0 ? <CartIncDec addRemoveCart={addRemoveCart} product={cart} disableDec={true}/> :
-                                    <div><button onClick={() => dispatch(removeCart(cart.id))} style={{width: "100%"}} className="btn btn-primary  mt-3">Remove</button></div> : <div>Quantity: {cart.quantity}</div> }
+                                    <CartIncDec addRemoveCart={addRemoveCart} product={cart} disableDec={true}/>
+                                    {onCheckout !== undefined ?
+                                     "" :
+                                    <div><button onClick={() => dispatch(removeCart(cart.id))} style={{width: "100%"}} className="btn btn-primary  mt-3">Remove</button></div>}
+                                    <div>Quantity: {cart.quantity}</div> 
                                     <div>Total: ${cart.quantity * cart.price}</div>
                                 </div>
                             </div>

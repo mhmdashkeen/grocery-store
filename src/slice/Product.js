@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import ProductService from "../services/ProductService";
 import { db, auth } from "../firebase-config";
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "@firebase/firestore";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "@firebase/auth";
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, where, query, setDoc } from "@firebase/firestore";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "@firebase/auth";
 
 const initialState = {
     cart: [],
@@ -12,11 +11,14 @@ const initialState = {
     singleProduct: {},
     productsCategories: [], 
     loading: true,
-    catloading: true
+    catloading: true,
+    orders: []
 }
 const productsRef = collection(db, "products");
 const categoryRef = collection(db, "categories");
 const usersRef = collection(db, "users");
+const cartRef = collection(db, "carts");
+const orderRef = collection(db, "orders");
 
 export const getProducts = createAsyncThunk(
     "products/get",
@@ -26,13 +28,28 @@ export const getProducts = createAsyncThunk(
     }
 )
 
+export const getProductById = createAsyncThunk(
+    "products/getProductById",
+    async (id) => {
+        const q = query(productsRef, where('id', '==', id));
+        const res = await getDocs(q);
+        const product = res.docs.map((elem) => ({ ...elem.data(), id: elem.id }));
+        return product[0];
+    }
+)
+
 export const getUser = createAsyncThunk(
     "products/getUser",
     async (user) => {
-        const res = await getDocs(usersRef);
-        const userObj = res.docs.map((elem) => ({ ...elem.data(), id: elem.id }))
-        .filter(doc => doc.email === user.email);
-        return userObj[0];
+        const localUser = JSON.parse(localStorage.getItem("userData"));
+        if(localUser){
+            return localUser;
+        }else{
+            const res = await getDocs(usersRef);
+            const userObj = res.docs.map((elem) => ({ ...elem.data(), id: elem.id }))
+            .filter(doc => doc.email === user.email);
+            return userObj[0];
+        }  
     }
 )
 
@@ -80,25 +97,25 @@ export const signin = createAsyncThunk(
     }
 )
 
+export const signinWithPhone = createAsyncThunk(
+    "products/signinWithPhone",
+    async () => {
+
+    
+    }
+)
+
 export const updateUserWithCart = createAsyncThunk(
     "products/updateUserCart",
     async (data) => {
         const user = JSON.parse(localStorage.getItem('userData'));
-        const userDoc = doc(db, "users", user.id);     
-        // console.log("UPDATW", {...user, cart: data});  
-        await updateDoc(userDoc, {...user, cart: data});
-        // console.log("Success");
+        // const userDoc = doc(db, "users", user.id);
+        // console.log("userDoc", userDoc);
+        await addDoc(orderRef, {...data, userId: user.id});
+        // await updateDoc(userDoc, {...user, orders: data});
     }
 )
 
-
-export const getSingleProduct = createAsyncThunk(
-    "products/getSingleProduct",
-    async (id) => {
-        const res = await ProductService.getSingleProduct(id);
-        return res.data;
-    }
-)
 
 export const deleteProducts = createAsyncThunk(
     "products/delete",
@@ -112,42 +129,152 @@ export const deleteProducts = createAsyncThunk(
 export const getCategory = createAsyncThunk(
     "product/category",
     async () => {
-        const res = await ProductService.getCategory();
-        return res.data;
+        const res = await getDocs(categoryRef);
+        return res.docs.map((elem) => ({ ...elem.data(), id: elem.id }));
     }
 )
 
 export const getProductsCategory = createAsyncThunk(
     "product/categorywiseProducts",
     async (cat) => {
-        const res = await ProductService.getProductsByCategory(cat);
-        return res.data;
+        const q = query(productsRef, where('category', '==', cat));
+        const res = await getDocs(q);
+        return res.docs.map((elem) => ({ ...elem.data(), id: elem.id }));
     }
 )
+
+export const addtocart = createAsyncThunk(
+    "products/addtocart",
+    async (data) => {
+        // const user = JSON.parse(localStorage.getItem('userData'));
+        // const addCartWithUser = {...data};
+        // if(user){
+        //     const documentRef = doc(db, "carts", data.id);
+        //     await setDoc(documentRef, addCartWithUser);
+        // }else{
+            const carts = localStorage.getItem("carts");
+            if(carts){
+                const cartList = JSON.parse(localStorage.getItem("carts"));
+                cartList.push(data);
+                localStorage.setItem("carts", JSON.stringify(cartList));
+            }else{
+                const cartArray = [];
+                cartArray.push(data);
+                localStorage.setItem("carts", JSON.stringify(cartArray));
+            }
+        // }
+        
+        // const productDoc = doc(db, "products", data.id);
+        // await updateDoc(productDoc, data);
+        return data;
+    }
+)
+
+export const updateCart = createAsyncThunk(
+    "products/updateCart",
+    async (data) => {
+        // const documentRef = doc(db, "carts", data.id);
+        // await setDoc(documentRef, data);
+        const cartList = JSON.parse(localStorage.getItem("carts"));
+        const indexCart = cartList.findIndex(cart => cart.id === data.id);
+        cartList.splice(indexCart, 1, data);
+        localStorage.setItem("carts", JSON.stringify(cartList));
+        return data;
+    }
+)
+
+export const removeCart = createAsyncThunk(
+    "products/removeCart",
+    async (id) => {
+        const cartList = JSON.parse(localStorage.getItem("carts"));
+        const indexCart = cartList.findIndex(cart => cart.id === id);
+        cartList.splice(indexCart, 1);
+        localStorage.setItem("carts", JSON.stringify(cartList));
+        return id;
+    }
+)
+
+export const getCart = createAsyncThunk(
+    "products/getCart",
+    async () => {
+        const cartList = JSON.parse(localStorage.getItem("carts"));
+        if(cartList){
+            return cartList;
+        }
+        return [];
+    }
+)
+
+export const getOrders = createAsyncThunk(
+    "product/getOrders",
+    async () => {
+        const user = JSON.parse(localStorage.getItem("userData"));
+        const q = query(orderRef, where('userId', '==', user.id));
+        const res = await getDocs(q);
+        return res.docs.map((elem) => ({ ...elem.data(), id: elem.id }));
+    }
+)
+
 
 const productsSlice = createSlice({
     name: "products",
     initialState,
     reducers: {
-        addtocart: (state, action) => {
-            const index = state.productsLists.findIndex(product => product.id === action.payload.id);
-            state.productsLists[index] = action.payload;
-            state.cart.push(action.payload);
-        },
-        updateCart: (state, action) => {
-            const index = state.productsLists.findIndex(product => product.id === action.payload.id);
-            state.productsLists[index].quantity = action.payload.quantity;
-            state.cart[action.payload.cartIndex] = action.payload;
-        },
-        removeCart: (state, action) => {
-            const indexCart = state.cart.findIndex(cart => cart.id === action.payload);
-            const index = state.productsLists.findIndex(product => product.id === action.payload);
-            delete state.productsLists[index].quantity;
-            state.cart.splice(indexCart, 1);
+        // addtocart: (state, action) => {
+        //     const index = state.productsLists.findIndex(product => product.id === action.payload.id);
+        //     state.productsLists[index] = action.payload;
+        //     state.cart.push(action.payload);
+        // },
+        // updateCart: (state, action) => {
+            // const index = state.productsLists.findIndex(product => product.id === action.payload.id);
+            // state.productsLists[index].quantity = action.payload.quantity;
+            // const indexCart = state.cart.findIndex(cart => cart.id === action.payload.id);
+            // state.cart.splice(indexCart, 1, action.payload);
+            // state.cart[action.payload.id] = action.payload;
+        // },
+        clearCart: (state, action) => {
+            state.cart = [];
         }
     },
     extraReducers(builder) {
         builder
+            .addCase(getCart.fulfilled, (state, action) => {
+                state.cart = action.payload
+            })
+            .addCase(signinWithPhone.fulfilled, (state, action) => {
+                console.log("STATE");
+            })
+            
+            .addCase(getOrders.fulfilled, (state, action) => {
+                state.orders = action.payload
+            })
+            .addCase(removeCart.fulfilled, (state, action) => {
+                const indexCart = state.cart.findIndex(cart => cart.id === action.payload);
+                state.cart.splice(indexCart, 1);
+            })
+            .addCase(addtocart.fulfilled, (state, action) => {
+                // const index = state.productsLists.findIndex(product => product.id === action.payload.id);
+                // state.productsLists[index] = action.payload;
+                state.cart.push(action.payload);
+            })
+            .addCase(updateCart.fulfilled, (state, action) => {
+                // const index = state.productsLists.findIndex(product => product.id === action.payload.id);
+                // state.productsLists[index] = action.payload;
+                // state.cart.push(action.payload);
+                const indexCart = state.cart.findIndex(cart => cart.id === action.payload.id);
+                state.cart.splice(indexCart, 1, action.payload);
+            })
+            .addCase(getProductById.pending, (state, action) => {
+                if(state.loading){
+                    state.loading = false;
+                }
+            })
+            .addCase(getProductById.fulfilled, (state, action) => {
+                if(!state.loading){
+                    state.loading = true;
+                }
+                state.singleProduct = action.payload;
+            })
             .addCase(getProducts.pending, (state, action) => {
                 if(state.loading){
                     state.loading = false;
@@ -186,11 +313,8 @@ const productsSlice = createSlice({
                 }
                 state.productsCategories = action.payload;
             })
-            .addCase(getSingleProduct.fulfilled, (state, action) => {
-                state.singleProduct = action.payload;
-            })
             .addCase(getProductsCategory.fulfilled, (state, action) => {
-                state.productsLists = action.payload.products;
+                state.productsLists = action.payload;
             })
             .addCase(deleteProducts.fulfilled, (state, action) => {
                 if(!state.loading){
@@ -256,6 +380,6 @@ const productsSlice = createSlice({
     // }
 })
 
-export const { addtocart, updateCart, removeCart } = productsSlice.actions;
+export const { clearCart } = productsSlice.actions;
 const { reducer } = productsSlice;
 export default reducer;

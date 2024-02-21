@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { deleteProducts, getCategory, getProducts, getProductsCategory } from '../slice/Product';
 import CartIncDec from './CartIncDec';
+import Categories from './Categories';
 
 const ProductListing = ({addRemoveCart}) => {
     const productsDetail = useSelector(state => state.products);
@@ -19,11 +20,7 @@ const ProductListing = ({addRemoveCart}) => {
     return (
         <div className="container">
             <div className="row">
-                <div className="col">
-                    <h3>Categories</h3>
-                    <button type="button" className="btn btn-outline-primary btn-block" onClick={() => dispatch(getProducts())}>All Products</button>
-                    {productsDetail.productsCategories.map(cat => <button key={cat} type="button" className="btn btn-outline-primary btn-block" onClick={() => dispatch(getProductsCategory(cat))}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</button>)}                    
-                </div>
+                <Categories />
                 <div className="col-9">
                     <h3>Products</h3>
                     <div className="row abc">
@@ -36,13 +33,9 @@ const ProductListing = ({addRemoveCart}) => {
                                      <div className="card-body">
                                          <h5 className="card-title">{product.name}</h5>
                                          <p className="card-text" title={product.description}>{product.description}</p>
-                                         {product.quantity !== undefined && product.quantity > 0 ? <><CartIncDec addRemoveCart={addRemoveCart} product={product} />
-                                         <Link to={"/cart"} style={{width: "calc(100% - 30px)", position: "absolute", top: "0", left: "15px"}} className="btn btn-primary mt-3">Go to Cart</Link>
-                                         </> : 
-                                         <button onClick={() => addRemoveCart(product, "increase")} style={{width: "100%"}} className="btn btn-primary">Add to Cart</button>}
                                          {loggedInUser?.isAdmin && (<><Link to={`/edit/${product.id}`}  state={{"product": product}} style={{width: "100%"}} className="btn btn-secondary mt-3">Edit</Link>
                                          <button onClick={() => dispatch(deleteProducts(product.id))} style={{width: "100%"}} className="btn btn-primary  mt-3">Delete</button></>)}
-                                         <Link to={`/products/${product.id}`} state={{"product": product}} style={{width: "100%"}} className="btn btn-secondary  mt-3">View Details</Link>
+                                         <Link to={`/products/${product.id}`} state={{"product": product}} style={{width: "100%"}} className="btn btn-primary mt-3">View Details</Link>
                                      </div>
                                  </div>
                              </div>
