@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { db, auth } from "../firebase-config";
 import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, where, query, setDoc } from "@firebase/firestore";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "@firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "@firebase/auth";
 
 const initialState = {
     cart: [],
@@ -17,7 +17,6 @@ const initialState = {
 const productsRef = collection(db, "products");
 const categoryRef = collection(db, "categories");
 const usersRef = collection(db, "users");
-const cartRef = collection(db, "carts");
 const orderRef = collection(db, "orders");
 
 export const getProducts = createAsyncThunk(
@@ -109,10 +108,7 @@ export const updateUserWithCart = createAsyncThunk(
     "products/updateUserCart",
     async (data) => {
         const user = JSON.parse(localStorage.getItem('userData'));
-        // const userDoc = doc(db, "users", user.id);
-        // console.log("userDoc", userDoc);
         await addDoc(orderRef, {...data, userId: user.id});
-        // await updateDoc(userDoc, {...user, orders: data});
     }
 )
 
@@ -146,12 +142,6 @@ export const getProductsCategory = createAsyncThunk(
 export const addtocart = createAsyncThunk(
     "products/addtocart",
     async (data) => {
-        // const user = JSON.parse(localStorage.getItem('userData'));
-        // const addCartWithUser = {...data};
-        // if(user){
-        //     const documentRef = doc(db, "carts", data.id);
-        //     await setDoc(documentRef, addCartWithUser);
-        // }else{
             const carts = localStorage.getItem("carts");
             if(carts){
                 const cartList = JSON.parse(localStorage.getItem("carts"));
@@ -162,10 +152,6 @@ export const addtocart = createAsyncThunk(
                 cartArray.push(data);
                 localStorage.setItem("carts", JSON.stringify(cartArray));
             }
-        // }
-        
-        // const productDoc = doc(db, "products", data.id);
-        // await updateDoc(productDoc, data);
         return data;
     }
 )
@@ -173,8 +159,6 @@ export const addtocart = createAsyncThunk(
 export const updateCart = createAsyncThunk(
     "products/updateCart",
     async (data) => {
-        // const documentRef = doc(db, "carts", data.id);
-        // await setDoc(documentRef, data);
         const cartList = JSON.parse(localStorage.getItem("carts"));
         const indexCart = cartList.findIndex(cart => cart.id === data.id);
         cartList.splice(indexCart, 1, data);
@@ -220,18 +204,6 @@ const productsSlice = createSlice({
     name: "products",
     initialState,
     reducers: {
-        // addtocart: (state, action) => {
-        //     const index = state.productsLists.findIndex(product => product.id === action.payload.id);
-        //     state.productsLists[index] = action.payload;
-        //     state.cart.push(action.payload);
-        // },
-        // updateCart: (state, action) => {
-            // const index = state.productsLists.findIndex(product => product.id === action.payload.id);
-            // state.productsLists[index].quantity = action.payload.quantity;
-            // const indexCart = state.cart.findIndex(cart => cart.id === action.payload.id);
-            // state.cart.splice(indexCart, 1, action.payload);
-            // state.cart[action.payload.id] = action.payload;
-        // },
         clearCart: (state, action) => {
             state.cart = [];
         }
@@ -253,14 +225,9 @@ const productsSlice = createSlice({
                 state.cart.splice(indexCart, 1);
             })
             .addCase(addtocart.fulfilled, (state, action) => {
-                // const index = state.productsLists.findIndex(product => product.id === action.payload.id);
-                // state.productsLists[index] = action.payload;
                 state.cart.push(action.payload);
             })
             .addCase(updateCart.fulfilled, (state, action) => {
-                // const index = state.productsLists.findIndex(product => product.id === action.payload.id);
-                // state.productsLists[index] = action.payload;
-                // state.cart.push(action.payload);
                 const indexCart = state.cart.findIndex(cart => cart.id === action.payload.id);
                 state.cart.splice(indexCart, 1, action.payload);
             })
@@ -322,62 +289,8 @@ const productsSlice = createSlice({
                 }
                 const index = state.productsLists.findIndex(product => product.id === action.payload);
                 state.productsLists.splice(index, 1);
-            })
-            
+            })       
     }
-    // extraReducers: {
-    //     [getProducts.pending]: (state, action) => {
-    //         if(state.loading){
-    //             state.loading = false;
-    //         }
-    //     },
-    //     [getProducts.fulfilled]: (state, action) => {
-    //         if(!state.loading){
-    //             state.loading = true;
-    //         }
-    //         state.productsLists = action.payload;
-    //     },
-    //     [addProduct.fulfilled]: (state, action) => {
-    //         state.productsLists.push(action.payload);
-    //     },
-    //     [editProduct.fulfilled]: (state, action) => {
-    //         const index = state.productsLists.findIndex(product => product.id === action.payload.id);
-    //         state.productsLists[index] = action.payload;
-    //     },
-    //     [signup.fulfilled]: (state, action) => {
-    //         state.loggedInUser = action.payload;
-    //     },
-    //     [signin.fulfilled]: (state, action) => {
-    //         state.loggedInUser = action.payload;
-    //     },
-    //     [getUser.fulfilled]: (state, action) => {
-    //         state.loggedInUser = action.payload;
-    //     },
-    //     [getCategory.pending]: (state, action) => {
-    //         if(state.catloading){
-    //             state.catloading = false;
-    //         }
-    //     },
-    //     [getCategory.fulfilled]: (state, action) => {
-    //         if(!state.catloading){
-    //             state.catloading = true;
-    //         }
-    //         state.productsCategories = action.payload;
-    //     },
-    //     [getSingleProduct.fulfilled]: (state, action) => {
-    //         state.singleProduct = action.payload;
-    //     },
-    //     [getProductsCategory.fulfilled]: (state, action) => {
-    //         state.productsLists = action.payload.products;
-    //     },
-    //     [deleteProducts.fulfilled]: (state, action) => {
-    //         if(!state.loading){
-    //             state.loading = true;
-    //         }
-    //         const index = state.productsLists.findIndex(product => product.id === action.payload);
-    //         state.productsLists.splice(index, 1);
-    //     }
-    // }
 })
 
 export const { clearCart } = productsSlice.actions;

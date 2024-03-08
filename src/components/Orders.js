@@ -13,7 +13,7 @@ const Orders = () => {
     return (
         <div>
             <h3>My Orders</h3>
-            {orders?.map(cart =>  <div key={cart[0].id}>
+            {orders?.map(cart =>  <div key={cart.id}>
                         <div style={{display: "flex"}}>
                             <div><img style={{width: "180px", height: "180px"}} src={cart[0].thumbnail} /></div>
                             <div>

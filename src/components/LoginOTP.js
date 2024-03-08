@@ -16,7 +16,7 @@ const LoginOTP = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const phoneNumber = "+918700529158";
+    const phoneNumber = "+919151723534";
 
     const submitForm = async (e) => {
         e.preventDefault();
