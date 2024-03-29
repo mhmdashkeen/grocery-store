@@ -11,7 +11,7 @@ module.exports = {
   },
   target: 'web',
   devServer: {
-    port: '3000',
+    port: '3001',
     static: {
       directory: path.join(__dirname, 'public')
     },
@@ -33,7 +33,13 @@ module.exports = {
       {
         test: /\.(sa|sc|c)ss$/,
         exclude: /node_modules/,
-        use: ["style-loader", "css-loader", "scoped-css-loader", "postcss-loader"],
+        use: ["style-loader", "css-loader", "scoped-css-loader", "postcss-loader", "sass-loader"],
+      },
+      {
+        test: /\.(png|svg|jpg|webp)$/,
+        use: {
+          loader: "url-loader"
+        },
       }
     ],
   },

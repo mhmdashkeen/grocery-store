@@ -32,25 +32,30 @@ const SingleProduct = ({addRemoveCart}) => {
         setMatchCart(getCartWithProduct);
     }, [cart]);
 
-    // console.log("Stat", product);
+    console.log("Stat", product);
 
     return (
         <div className="container">
             {loading ? <div className="row">
-                <div className="col-6">
-                    <h5 className="card-title">{product?.title}</h5>
-                    <p className="card-text"><strong>Description:</strong> {product?.description}</p>
-                    <p className="card-text"><strong>Category:</strong> {product?.category}</p>
-                    <p className="card-text"><strong>Price: <span style={{color: "green", fontSize: "18px"}}>{product?.discountPercentage}%</span></strong> {product?.price} <strong>{actualPrice}</strong></p>
-                    {matchCart?.quantity > 0 ? <><CartIncDec addRemoveCart={addRemoveCart} product={matchCart}  disableDec={true}/>
-                    <Link to={"/cart"} style={{width: "100%"}} className="btn btn-primary mt-3">Go to Cart</Link>
-                    </> : 
-                    <button onClick={() => addRemoveCart(product, "increase")} style={{width: "100%"}} className="btn btn-primary">Add to Cart</button>}
-                </div>
-                <div className="col-6">
-                    <div className="card">
-                        <img src={product?.thumbnail} className="card-img-top" alt=""/>
+                <div className="col">
+                    <h1 className="card-title">{product?.name}</h1>
+                    <hr/>
+                    <div style={{display: "flex", gap: "50px"}}>
+                        <div>
+                            <img src={product?.thumbnail} className="card-img-top" alt="" style={{minWidth: "300px", maxHeight: "300px", objectFit: "cover"}}/>
+                        </div>
+                        <div>
+                        <h3 className="card-title">{product?.name}</h3>
+                        <p className="card-text">{product?.description}</p>
+                        <p className="card-text"><strong>Category:</strong> {product?.category}</p>
+                        <p className="card-text"><strong>Price: <span style={{color: "green", fontSize: "18px"}}>{product?.discountPercentage}%</span></strong> {product?.price} <strong>{actualPrice}</strong></p>
+                        {matchCart?.quantity > 0 ? <><CartIncDec addRemoveCart={addRemoveCart} product={matchCart}  disableDec={true}/>
+                        <Link to={"/cart"} style={{width: "100%"}} className="btn btn-primary mt-3">Go to Cart</Link>
+                        </> : 
+                        <button onClick={() => addRemoveCart(product, "increase")} style={{width: "100%"}} className="btn btn-primary">Add to Cart</button>}
+                        </div>
                     </div>
+                    <hr/>
                 </div>
             </div> : "Loading"}
         </div>

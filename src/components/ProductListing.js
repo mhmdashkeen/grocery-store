@@ -20,14 +20,20 @@ const ProductListing = ({addRemoveCart}) => {
     return (
         <div className="container">
             <div className="row">
-                <Categories />
-                <div className="col-9">
-                    <h3>Products</h3>
+                {/* <Categories /> */}
+                <div className="col">
+                    <div>
+                        <h3>Shop by Collection</h3>
+                        <p>
+                        Each season, we collaborate with world class designers to create a
+                        collection inspired by natural world.
+                        </p>
+                    </div>
                     <div className="row abc">
                         {!productsDetail.loading ? <div className='col-12' style={{textAlign: "center"}}>Loading</div> : 
                              productsDetail.productsLists.length === 0 ? <div className='col-12' style={{textAlign: "center"}}>No Product.</div> :
                              productsDetail.productsLists.map(product => {
-                                 return <div className="col-4" key={product.id}>
+                                 return <div className="col-3" key={product.id}>
                                  <div className="card">
                                      <img src={product.thumbnail} className="card-img-top" alt=""/>
                                      <div className="card-body">

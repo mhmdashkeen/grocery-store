@@ -13,8 +13,9 @@ import Header from './components/Header';
 import Checkout from './components/Checkout';
 import Orders from './components/Orders';
 import Home from './components/Home';
-import Categories from './components/Categories';
+import About from './components/AboutUs';
 import LoginOTP from './components/LoginOTP';
+import WishList from './components/WishList';
 
 
 const Routing = () => {
@@ -67,7 +68,8 @@ const Routing = () => {
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/products/:id" element={<SingleProduct addRemoveCart={cartAddition}/>} />
                     <Route exact path="/products" element={<ProductListing/>} />
-                    <Route exact path="/categories" element={<Categories />} />
+                    <Route exact path="/wishlist" element={<WishList />} /> 
+                    <Route exact path="/about" element={<About />} /> 
                     <Route exact path="/" element={<Home />} />
                 </Routes>
             </div>
