@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 import { styled } from '@mui/system';
+import Stack from '@mui/material/Stack';
 
 const formObject = {
   name: "",
@@ -101,10 +102,14 @@ const AddProduct = () => {
       }
     }
 
+    const handleCancel = () => {
+      setFormValues(formObject);
+    }
+
     // console.log('STTE', state.product.id, formValues);
 
     return (
-        <div style={{padding: "30px 0px"}}>
+        <div className="container" style={{padding: "30px 0px"}}>
           <div className='row'>
             <div className='col-6'>
               <div className="form-group">
@@ -118,21 +123,6 @@ const AddProduct = () => {
                     }))
                   }}
                   name="name"/>
-                {/* <label htmlFor="name">Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  required
-                  value={formValues.name}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    name: e.target.value
-                    }))
-                  }}
-                  name="name"
-                /> */}
               </div>
             </div>
 
@@ -146,16 +136,6 @@ const AddProduct = () => {
                     }))
                   }}
                   name="description"/>
-                {/* <label htmlFor="description">Description</label>
-
-                <textarea className="form-control" id="description" required rows="3" value={formValues.description}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    description: e.target.value
-                    }))
-                  }}
-                  name="description"></textarea> */}
               </div>
             </div>
 
@@ -171,21 +151,6 @@ const AddProduct = () => {
                     }))
                   }}
                   name="price"/>
-                {/* <label htmlFor="price">Price</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="price"
-                  required
-                  value={formValues.price}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    price: e.target.value
-                    }))
-                  }}
-                  name="price"
-                /> */}
               </div>
             </div>
 
@@ -201,21 +166,6 @@ const AddProduct = () => {
                     }))
                   }}
                   name="category"/>
-                {/* <label htmlFor="category">Category</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="category"
-                  required
-                  value={formValues.category}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    category: e.target.value
-                    }))
-                  }}
-                  name="category"
-                /> */}
               </div>
             </div>
 
@@ -231,21 +181,6 @@ const AddProduct = () => {
                     }))
                   }}
                   name="discountPercentage"/>
-                {/* <label htmlFor="discountPercentage">Discount Percentage</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="discountPercentage"
-                  required
-                  value={formValues.discountPercentage}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    discountPercentage: e.target.value
-                    }))
-                  }}
-                  name="discountPercentage"
-                /> */}
               </div>
             </div>
             
@@ -261,29 +196,17 @@ const AddProduct = () => {
                     }))
                   }}
                   name="thumbnail"/>
-                {/* <label htmlFor="thumbnail">Thumbnail</label>
-                <input
-                  type="url"
-                  className="form-control"
-                  id="thumbnail"
-                  required
-                  value={formValues.thumbnail}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    thumbnail: e.target.value
-                    }))
-                  }}
-                  name="thumbnail"
-                /> */}
               </div>
             </div>
-            <div className='col-6'>
-              <Button
-              variant="contained"
-              onClick={saveProduct}>
-               {state !== null ? "Update" : "Add"} Product
-              </Button>
+            <div className='col text-right'>
+              <Stack spacing={2} direction="row" justifyContent={"end"}>
+                <Button variant="outlined" onClick={handleCancel}>Cancel</Button>
+                <Button
+                variant="contained"
+                onClick={saveProduct}>
+                {state !== null ? "Update" : "Add"} Product
+                </Button>
+              </Stack>
             </div>
           </div>
       </div>

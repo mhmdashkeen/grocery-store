@@ -7,7 +7,7 @@ import CartIncDec from './CartIncDec';
 
 const SingleProduct = ({addRemoveCart}) => {
     // const product = useSelector(state => state.products.singleProduct);
-    const cart = useSelector(state => state.products.cart);
+    const cart = useSelector(state => state.cart);
     const loading = useSelector(state => state.products.loading);
     const [matchCart, setMatchCart] = useState({});
     // const dispatch = useDispatch();
@@ -32,7 +32,7 @@ const SingleProduct = ({addRemoveCart}) => {
         setMatchCart(getCartWithProduct);
     }, [cart]);
 
-    console.log("Stat", product);
+    // console.log("Stat", product);
 
     return (
         <div className="container">

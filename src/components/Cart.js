@@ -1,16 +1,16 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { removeCart } from '../slice/Product';
+import { removeCart } from '../slice/Cart';
 import CartIncDec from './CartIncDec';
 import cart from "../../public/assets/img/cart.png";
 
 const Cart = ({addRemoveCart, onCheckout}) => {
-    const cartItems = useSelector(state => state.products.cart);
+    const cartItems = useSelector(state => state.cart);
     const dispatch = useDispatch();
     if(cartItems.length > 0){
         return (
-            <div>
+            <div className='container'>
             {cartItems.map(cart => {
                     return <div key={cart.id}>
                             <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 20px", boxShadow: "1px 1px 7px #d3d3d3", marginBottom: "30px", borderRadius: "4px"}}>

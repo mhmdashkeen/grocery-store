@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { signin } from '../slice/Product';
+import { signin } from '../slice/User';
 import { useLocation, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 

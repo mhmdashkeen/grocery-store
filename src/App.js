@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { auth } from "./firebase-config";
 import { onAuthStateChanged } from "@firebase/auth";
-import { getCart, getUser, signinWithPhone } from "./slice/Product";
+import { getUser, signinWithPhone } from "./slice/User";
+import { getCart } from "./slice/Cart";
 import { toast, ToastContainer } from 'react-toastify';
 import Routing from "./Routing";
 import "./App.css";
@@ -18,16 +19,16 @@ const App = () =>{
                 .unwrap()
                 .then((data) => {
                   console.log("Response Data", data);
-                  localStorage.setItem("userData", JSON.stringify(data));
+                  sessionStorage.setItem("userData", JSON.stringify(data));
                 })
                 .catch((e) => {
                   toast(e.message);
                 })
-                localStorage.setItem("user", JSON.stringify(user));
+                sessionStorage.setItem("user", JSON.stringify(user));
             }
             else{
-                localStorage.removeItem("user");
-                localStorage.removeItem("userData");
+                sessionStorage.removeItem("user");
+                sessionStorage.removeItem("userData");
             }
         });
         dispatch(getCart());

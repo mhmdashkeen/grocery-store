@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { clearCart, updateUserWithCart } from '../slice/Product';
+import { clearCart, updateUserWithCart } from '../slice/Cart';
 import { useNavigate } from 'react-router';
 import Cart from "./Cart";
 
 const Checkout = () => {
-    const cartItems = useSelector(state => state.products.cart);
+    const cartItems = useSelector(state => state.cart);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const handleCheckout = () => {

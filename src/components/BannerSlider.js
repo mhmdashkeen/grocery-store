@@ -46,10 +46,7 @@ const BannerSlider = () => {
                   A single place for all your products. Discover more products
                   on our products secion
                 </p>
-                <Button
-              variant="contained">
-                  <a href="#product-list">Discover More</a>
-                </Button>
+                <Button variant="contained" href="#product-list">Discover More</Button>
               </Carousel.Caption>
             </Carousel.Item>
           );

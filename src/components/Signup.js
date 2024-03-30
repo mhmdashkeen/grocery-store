@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { signup } from '../slice/Product';
+import { signup } from '../slice/User';
 import { toast } from 'react-toastify';
 
 const formObject = {

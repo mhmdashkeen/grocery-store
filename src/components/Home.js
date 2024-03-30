@@ -56,7 +56,9 @@ const Home = () => {
                 })}
             </div>
             </div>
-            <ProductListing />
+            <div id="product-list">
+              <ProductListing />
+            </div>
         </div>
     );
 }
