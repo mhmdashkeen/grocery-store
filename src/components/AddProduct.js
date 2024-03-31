@@ -239,4 +239,4 @@ const AddProduct = () => {
     );
 }
  
-export default AddProduct;
+export default React.memo(AddProduct);

@@ -111,4 +111,4 @@ const AddCategory = () => {
     );
 }
  
-export default AddCategory;
+export default React.memo(AddCategory);
