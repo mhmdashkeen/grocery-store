@@ -9,7 +9,7 @@ const orderRef = collection(db, "orders");
 export const updateUserWithCart = createAsyncThunk(
     "products/updateUserCart",
     async (data) => {
-        const user = JSON.parse(sessionStorage.getItem('userData'));
+        const user = sessionStorage.getItem('token');
         await addDoc(orderRef, {...data, userId: user.id});
     }
 )

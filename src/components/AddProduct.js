@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { addProduct, editProduct } from '../slice/Product';
 import { useLocation } from 'react-router';
 import { toast } from 'react-toastify';
@@ -8,6 +8,12 @@ import TextField from '@mui/material/TextField';
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 import { styled } from '@mui/system';
 import Stack from '@mui/material/Stack';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import { getCategory } from '../slice/Category';
+import { LoadingButton } from '@mui/lab';
 
 const formObject = {
   name: "",
@@ -72,20 +78,24 @@ const AddProduct = () => {
   );
 
     const { state } = useLocation();
+    const categories = useSelector(state => state.category);
     const dispatch = useDispatch();
     const [formValues, setFormValues] = useState(state !== null ? state.product : formObject);
+    const [loading, setLoading] = useState(false);
 
     const saveProduct = () => {
+      setLoading(true);
       if(state !== null) {
-        console.log("aa");
         dispatch(editProduct(formValues))
         .unwrap()
         .then(() => {
           setFormValues(formObject);
+          setLoading(false);
           console.log("Success");
         })
         .catch((e) => {
           console.log("API Error", e.message);
+          setLoading(false);
           toast(e.message);
         })
       } else {
@@ -93,10 +103,12 @@ const AddProduct = () => {
         .unwrap()
         .then(() => {
           setFormValues(formObject);
+          setLoading(false);
           console.log("Success");
         })
         .catch((e) => {
           console.log("API Error", e.message);
+          setLoading(false);
           toast(e.message);
         })
       }
@@ -106,7 +118,13 @@ const AddProduct = () => {
       setFormValues(formObject);
     }
 
-    // console.log('STTE', state.product.id, formValues);
+    useEffect(() => {
+      if(categories.length === 0){
+        dispatch(getCategory());
+      }
+    }, []);
+
+    // console.log('STTE', formValues, categories);
 
     return (
         <div className="container" style={{padding: "30px 0px"}}>
@@ -156,16 +174,22 @@ const AddProduct = () => {
 
             <div className='col-6'>
               <div className="form-group">
-              <TextField id="standard-basic" fullWidth label="Category" variant="standard" type="text" id="category"
-                  required
+              <FormControl variant="standard" fullWidth>
+                <InputLabel id="demo-simple-select-standard-label">Category</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard-label"
                   value={formValues.category}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
+                  onChange={(e) => setFormValues((prevState) => ({
                     ...prevState,
                     category: e.target.value
-                    }))
-                  }}
-                  name="category"/>
+                    }))}
+                  label="Category"
+                  name="category"
+                >
+                  {categories.map(c => <MenuItem key={c.id} value={c.value}>{c.label}</MenuItem>)}
+                </Select>
+              </FormControl>
               </div>
             </div>
 
@@ -201,11 +225,13 @@ const AddProduct = () => {
             <div className='col text-right'>
               <Stack spacing={2} direction="row" justifyContent={"end"}>
                 <Button variant="outlined" onClick={handleCancel}>Cancel</Button>
-                <Button
-                variant="contained"
-                onClick={saveProduct}>
-                {state !== null ? "Update" : "Add"} Product
-                </Button>
+                <LoadingButton
+                      loading={loading}
+                      variant="contained"
+                      onClick={saveProduct}
+                    >
+                  <span>{state !== null ? "Update" : "Add"} Product</span>
+                </LoadingButton>
               </Stack>
             </div>
           </div>

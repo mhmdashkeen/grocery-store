@@ -1,24 +1,14 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from "react-router-dom";
-// import AddProduct from "./components/AddProduct";
-// import Cart from "./components/Cart";
-// import Login from "./components/Login";
-// import ProductListing from "./components/ProductListing";
-// import Signup from "./components/Signup";
-// import SingleProduct from "./components/SingleProduct";
 import ProtectedRoute from "./common/ProtectedRoute";
 import { useDispatch, useSelector } from 'react-redux';
 import { addtocart, updateCart } from './slice/Cart';
 import Header from './components/Header';
-// import Checkout from './components/Checkout';
-// import Orders from './components/Orders';
 import Home from './components/Home';
 import Footer from './components/Footer';
 import ErrorPage from './components/ErrorPage';
 import ScreenLoader from './components/ScreenLoader';
-// import About from './components/AboutUs';
-// import LoginOTP from './components/LoginOTP';
-// import WishList from './components/WishList';
+import Add from './components/Add';
 
 const About = lazy(() => import('./components/AboutUs'));
 const WishList = lazy(() => import('./components/WishList'));
@@ -36,7 +26,7 @@ const Cart = lazy(() => import('./components/Cart'));
 
 const Routing = () => {
     const cartItems = useSelector(state => state.cart);
-    console.log(cartItems);
+
     const dispatch = useDispatch();
     const cartAddition = (product, opt) => {
         const cartfilter = cartItems.findIndex(cart => cart.id === product.id);
@@ -63,7 +53,7 @@ const Routing = () => {
             <div style={{minHeight: "calc(100vh - 111px)"}}>
                 <Routes>
                     <Route path="/cart" element={<Suspense fallback={<ScreenLoader />}><Cart addRemoveCart={cartAddition}/></Suspense>} />
-                    <Route path="/add" element={<Suspense fallback={<ScreenLoader />}><ProtectedRoute><AddProduct /></ProtectedRoute></Suspense>} />
+                    <Route path="/add" element={<Suspense fallback={<ScreenLoader />}><ProtectedRoute><Add /></ProtectedRoute></Suspense>} />
                     <Route path="/edit/:id" element={<Suspense fallback={<ScreenLoader />}><ProtectedRoute><AddProduct /></ProtectedRoute></Suspense>} />
                     <Route path="/checkout" element={<Suspense fallback={<ScreenLoader />}><ProtectedRoute><Checkout /></ProtectedRoute></Suspense>} />
                     <Route path="/orders" element={<Suspense fallback={<ScreenLoader />}><ProtectedRoute><Orders /></ProtectedRoute></Suspense>} />

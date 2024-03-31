@@ -4,6 +4,8 @@ import { useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 // import { getProductById } from '../slice/Product';
 import CartIncDec from './CartIncDec';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
 const SingleProduct = ({addRemoveCart}) => {
     // const product = useSelector(state => state.products.singleProduct);
@@ -48,11 +50,13 @@ const SingleProduct = ({addRemoveCart}) => {
                         <h3 className="card-title">{product?.name}</h3>
                         <p className="card-text">{product?.description}</p>
                         <p className="card-text"><strong>Category:</strong> {product?.category}</p>
-                        <p className="card-text"><strong>Price: <span style={{color: "green", fontSize: "18px"}}>{product?.discountPercentage}%</span></strong> {product?.price} <strong>{actualPrice}</strong></p>
+                        <p className="card-text"><strong>Price: <span style={{color: "green", fontSize: "18px"}}>{product?.discountPercentage}%</span></strong> <s>${product?.price}</s> <strong>${actualPrice}</strong></p>
                         {matchCart?.quantity > 0 ? <><CartIncDec addRemoveCart={addRemoveCart} product={matchCart}  disableDec={true}/>
                         <Link to={"/cart"} style={{width: "100%"}} className="btn btn-primary mt-3">Go to Cart</Link>
-                        </> : 
-                        <button onClick={() => addRemoveCart(product, "increase")} style={{width: "100%"}} className="btn btn-primary">Add to Cart</button>}
+                        </> : <Stack spacing={2} direction="row" justifyContent={"start"}>
+                                <Button variant="contained" onClick={() => addRemoveCart(product, "increase")}>Add to Cart</Button>
+                                <Button variant="outlined">Add to Wishlist</Button>
+                            </Stack>}
                         </div>
                     </div>
                     <hr/>

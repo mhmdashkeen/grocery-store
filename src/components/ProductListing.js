@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCategory, getProducts } from '../slice/Product';
+import { getProducts } from '../slice/Product';
 import ProductCard from './ProductCard';
 
 const ProductListing = () => {
@@ -10,7 +10,6 @@ const ProductListing = () => {
     useEffect(() => {
         if(products.length === 0){
             dispatch(getProducts());
-            dispatch(getCategory());
         }
     }, []);
 

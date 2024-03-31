@@ -9,10 +9,11 @@ const Orders = () => {
     useEffect(() => {
         dispatch(getOrders());
     }, []);
+    if(orders.length === 0) return  <div className='container'><h3>My Orders</h3><div>No orders</div></div>;
     return (
         <div className='container'>
             <h3>My Orders</h3>
-            {orders?.map(cart =>  <div key={cart.id}>
+            {orders.map(cart =>  <div key={cart.id}>
                         <div  style={{display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 20px", boxShadow: "1px 1px 7px #d3d3d3", marginBottom: "30px", borderRadius: "4px"}}>
                             <div style={{display: "flex", alignItems: "center"}}>
                                 <div style={{marginRight: "20px"}}>
@@ -32,7 +33,6 @@ const Orders = () => {
                     </div>
             )
         }
-        {!orders && <div>No orders</div>}
     </div>
     )}
  

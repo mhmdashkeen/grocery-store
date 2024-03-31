@@ -6,6 +6,7 @@ import cat3 from "../../public/assets/img/cat3.webp";
 import cat4 from "../../public/assets/img/cat4.webp";
 import styles from "../../public/assets/styles/category.module.scss";
 import ProductListing from "./ProductListing";
+import Categories from './Categories';
 
 const Home = () => {
     const categories = [

@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { signin } from '../slice/User';
 import { useLocation, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
+import { LoadingButton } from '@mui/lab';
 
 const formObject = {
     email: "",
@@ -10,6 +11,7 @@ const formObject = {
 } 
 const Login = () => {
     const [formValues, setFormValues] = useState(formObject);
+    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -17,9 +19,11 @@ const Login = () => {
     const submitForm = (e) => {
         e.preventDefault();
         const { email, password } = formValues;
+        setLoading(true);
           dispatch(signin({ email, password }))
           .unwrap()
-          .then(() => {
+          .then((data) => {
+            setLoading(false);
             if(location.state !== null){
               navigate(location.state.from.pathname);
             }else {
@@ -28,6 +32,7 @@ const Login = () => {
           })
           .catch((e) => {
             console.log("API Error", e);
+            setLoading(false);
             toast(e.message);
           })
       }
@@ -70,12 +75,14 @@ const Login = () => {
                 name="password"
               />
             </div>
-
-            <button
-            type='submit'
-            className="btn btn-success">
-              Login
-            </button>
+            <LoadingButton
+                loading={loading}
+                variant="contained"
+                type="submit"
+                fullWidth
+              >
+            <span>Login</span>
+          </LoadingButton>
           </form>
       </div>
     );

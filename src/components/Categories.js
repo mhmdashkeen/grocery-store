@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts, getProductsCategory } from '../slice/Product';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { getCategory } from '../slice/Category';
 
 const Categories = () => {
     const categories = useSelector(state => state.products.productsCategories);
+    const categories1 = useSelector(state => state.category);
     const dispatch = useDispatch();
+    useEffect(() => {
+            dispatch(getCategory());
+    }, []);
+    console.log("categories1", categories1);
     return (
         <div className="col">
             <h3>Categories</h3>

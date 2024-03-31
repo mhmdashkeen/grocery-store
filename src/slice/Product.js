@@ -5,13 +5,9 @@ import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, where, query } 
 const initialState = {
     productsLists: [],
     singleProduct: {},
-    productsCategories: [], 
     loading: true,
-    catloading: true,
-    orders: []
 }
 const productsRef = collection(db, "products");
-const categoryRef = collection(db, "categories");
 
 export const getProducts = createAsyncThunk(
     "products/get",
@@ -34,15 +30,8 @@ export const getProductById = createAsyncThunk(
 export const addProduct = createAsyncThunk(
     "products/add",
     async (data) => {
-        const added = await addDoc(productsRef, data);
-        const res = await getDocs(categoryRef);
-        const catList = res.docs.map((elem) => ({ ...elem.data(), id: elem.id }));
-        const catDuplicate = catList.filter(cat => cat.value.toLowerCase() === data.category.toLowerCase());
-        const catData = {value: data.category.toLowerCase(), label: data.category}
-        if(catDuplicate.length <= 0) {
-            await addDoc(categoryRef, catData);
-        }
-        return {...data, id: added.id};
+        await addDoc(productsRef, data);
+        return data;
     }
 )
 
@@ -61,14 +50,6 @@ export const deleteProducts = createAsyncThunk(
         const productDoc = doc(db, "products", id)
         await deleteDoc(productDoc);
         return id;
-    }
-)
-
-export const getCategory = createAsyncThunk(
-    "product/category",
-    async () => {
-        const res = await getDocs(categoryRef);
-        return res.docs.map((elem) => ({ ...elem.data(), id: elem.id }));
     }
 )
 
@@ -114,17 +95,6 @@ const productsSlice = createSlice({
             .addCase(editProduct.fulfilled, (state, action) => {
                 const index = state.productsLists.findIndex(product => product.id === action.payload.id);
                 state.productsLists[index] = action.payload;
-            })
-            .addCase(getCategory.pending, (state, action) => {
-                if(state.catloading){
-                    state.catloading = false;
-                }
-            })
-            .addCase(getCategory.fulfilled, (state, action) => {
-                if(!state.catloading){
-                    state.catloading = true;
-                }
-                state.productsCategories = action.payload;
             })
             .addCase(getProductsCategory.fulfilled, (state, action) => {
                 state.productsLists = action.payload;

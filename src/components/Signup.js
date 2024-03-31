@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { signup } from '../slice/User';
+import { addUser, signup } from '../slice/User';
 import { toast } from 'react-toastify';
+import { updateProfile } from "@firebase/auth";
+import { USER_AVATAR } from "../utils/constants";
+import { auth } from "../firebase-config";
+import { LoadingButton } from '@mui/lab';
 
 const formObject = {
     name: "",
@@ -11,19 +15,30 @@ const formObject = {
 } 
 const Signup = () => {
     const [formValues, setFormValues] = useState(formObject);
+    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const submitForm = e => {
         e.preventDefault();
         const { name, email, password } = formValues;
+        setLoading(true);
           dispatch(signup({ name, email, password }))
           .unwrap()
           .then((data) => {
-            console.log("Response Data", data);
+            updateProfile(auth.currentUser, {
+              displayName: name,
+              photoURL: USER_AVATAR
+            })
+            .then(() => {
+              const { uid, displayName, email, photoURL } = auth.currentUser;
+              dispatch(addUser({ uid, displayName, email, photoURL }));
+            })
+            setLoading(false);
             navigate("/");
           })
           .catch((e) => {
+            setLoading(false);
             toast(e.message);
           })
       }
@@ -85,12 +100,14 @@ const Signup = () => {
                 name="password"
               />
             </div>
-
-            <button
-            type='submit'
-            className="btn btn-success">
-              Signup
-            </button>
+            <LoadingButton
+                loading={loading}
+                variant="contained"
+                type="submit"
+                fullWidth
+              >
+            <span>Signup</span>
+          </LoadingButton>
           </form>
          {/* )} */}
       </div>

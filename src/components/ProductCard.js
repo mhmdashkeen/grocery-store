@@ -34,6 +34,7 @@ const ProductCard = ({product}) => {
                 <div className="card-body">
                     <h5 className="card-title">{product.name}</h5>
                     <p className="card-text" title={product.description}>{product.description}</p>
+                    <p className="card-text" title={product.price}>${product.price}</p>
                     {loggedInUser?.isAdmin && (
                         <>
                             <div style={{position: "absolute", top:"0", right: "0", backgroundColor: "#fff", borderRadius: "2px"}}>

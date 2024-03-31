@@ -1,43 +1,26 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { db, auth } from "../firebase-config";
-import { collection, addDoc, getDocs } from "@firebase/firestore";
+import { auth } from "../firebase-config";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "@firebase/auth";
 
 const initialState = null;
-const usersRef = collection(db, "users");
-
-export const getUser = createAsyncThunk(
-    "user/getUser",
-    async (user) => {
-        const localUser = JSON.parse(sessionStorage.getItem("userData"));
-        if(localUser){
-            return localUser;
-        }else{
-            const res = await getDocs(usersRef);
-            const userObj = res.docs.map((elem) => ({ ...elem.data(), id: elem.id }))
-            .filter(doc => doc.email === user.email);
-            return userObj[0];
-        }  
-    }
-)
 
 export const signup = createAsyncThunk(
     "user/Signup",
     async (data) => {
-        await createUserWithEmailAndPassword(auth, data.email, data.password);
-        await addDoc(usersRef, {name: data.name, email: data.email});
-        return {name: data.name, email: data.email};
+        const current = await createUserWithEmailAndPassword(auth, data.email, data.password);
+        const { uid, displayName, email, photoURL } = current.user;
+        sessionStorage.setItem("userData", JSON.stringify({ uid, displayName, email, photoURL }));
+        return { uid, displayName, email, photoURL }
     }
 )
 
 export const signin = createAsyncThunk(
     "user/Signin",
     async (data) => {
-        await signInWithEmailAndPassword(auth, data.email, data.password);
-        const res = await getDocs(usersRef);
-        const user = res.docs.map((elem) => ({ ...elem.data(), id: elem.id }))
-        .filter(doc => doc.email === data.email);
-        return user[0];
+        const current = await signInWithEmailAndPassword(auth, data.email, data.password);
+        const { uid, displayName, email, photoURL } = current.user;
+        sessionStorage.setItem("userData", JSON.stringify({ uid, displayName, email, photoURL }));
+        return { uid, displayName, email, photoURL }
     }
 )
 
@@ -52,6 +35,11 @@ export const signinWithPhone = createAsyncThunk(
 const userSlice = createSlice({
     name: "user",
     initialState,
+    reducers: {
+        addUser: (state, action) => {
+            return action.payload;
+        }
+    },
     extraReducers(builder) {
         builder
             .addCase(signinWithPhone.fulfilled, (state, action) => {
@@ -63,10 +51,8 @@ const userSlice = createSlice({
             .addCase(signin.fulfilled, (state, action) => {
                 return action.payload;
             })
-            .addCase(getUser.fulfilled, (state, action) => {
-                return action.payload;
-            })
     }
 })
 
+export const { addUser } = userSlice.actions;
 export default userSlice.reducer;
