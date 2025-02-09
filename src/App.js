@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import { useDispatch } from "react-redux";
 import { auth } from "./firebase-config";
 import { signOut } from "@firebase/auth";
 import { addUser } from "./slice/User";
 import { ToastContainer } from 'react-toastify';
 import Routing from "./Routing";
+import ScreenLoader from './components/ScreenLoader';
 import "./App.css";
 
 
@@ -28,7 +29,9 @@ const App = () =>{
     }, []);
     return (
         <React.Fragment>
-            <Routing/>
+            <Suspense fallback={<ScreenLoader />}>
+                <Routing/>
+            </Suspense>
             <ToastContainer />
         </React.Fragment>
     )

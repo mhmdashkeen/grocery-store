@@ -4,6 +4,7 @@ import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, where, query } 
 
 const initialState = {
     productsLists: [],
+    filteredProductsList: [],
     singleProduct: {},
     loading: true,
 }
@@ -65,6 +66,11 @@ export const getProductsCategory = createAsyncThunk(
 const productsSlice = createSlice({
     name: "products",
     initialState,
+    reducers: {
+        setFilteredProducts: (state, action) => {
+            state.filteredProductsList = action.payload;
+        }
+    },
     extraReducers(builder) {
         builder
             .addCase(getProductById.pending, (state, action) => {
@@ -88,6 +94,7 @@ const productsSlice = createSlice({
                     state.loading = true;
                 }
                 state.productsLists = action.payload;
+                state.filteredProductsList = action.payload;
             })
             .addCase(addProduct.fulfilled, (state, action) => {
                 state.productsLists.push(action.payload);
@@ -109,4 +116,5 @@ const productsSlice = createSlice({
     }
 })
 
+export const { setFilteredProducts } = productsSlice.actions;
 export default productsSlice.reducer;

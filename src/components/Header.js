@@ -48,11 +48,11 @@ const Header = () => {
                             Home
                         </Link>
                         </li>
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <Link to={"/about"} className="nav-link">
                                 About us
                             </Link>
-                        </li>
+                        </li> */}
                         {loggedInUser?.isAdmin && <li className="nav-item">
                         <Link to={"/add"} className="nav-link">
                             Add
@@ -63,12 +63,12 @@ const Header = () => {
                                 Products
                             </Link>
                         </li>
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <Link to={"/wishlist"} className="nav-link">
                                 Wishlist
                             </Link>
-                        </li>
-                        {loggedInUser && <li className="nav-item">
+                        </li> */}
+                        {/* {loggedInUser && <li className="nav-item">
                         <Link to={"/orders"} className="nav-link">
                             Orders
                         </Link>
@@ -77,7 +77,7 @@ const Header = () => {
                             <Link to={"/cart"} className="btn btn-secondary">
                                 Cart <span className="badge badge-light">{cartItems.length}</span>
                             </Link>
-                        </li>
+                        </li> */}
                     </div>
                     {!loggedInUser && <><Link to={"/login"} className="nav-link">
                         Login

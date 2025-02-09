@@ -27,15 +27,18 @@ const ProductCard = ({product}) => {
         boxShadow: 24,
         p: 4,
       };
+      console.log("Product", product);
     return (
         <div className="col-3" key={product.id}>
             <div className="card">
-                <img src={product.thumbnail} className="card-img-top" alt=""/>
+                {product.thumbnail && <img src={product.thumbnail} className="card-img-top" alt="" />}
                 <div className="card-body">
                     <h5 className="card-title">{product.name}</h5>
-                    <p className="card-text" title={product.description}>{product.description}</p>
-                    <p className="card-text" title={product.price}>${product.price}</p>
-                    {loggedInUser?.isAdmin && (
+                    {product.description && <p className="card-text">{product.description}</p>}
+                    <p className="card-text"><strong>Price:</strong> {product.discount > 0 ? `₹${product.sellPrice - parseInt(product.discount)}/${product.saleIn}` : ""} ₹{product.sellPrice}</p>
+                    {product.weight && <p className="card-text"><strong>Weight:</strong> {product.weight}{product.saleIn}</p>}
+                    {product.brand && <p className="card-text"><strong>Brand:</strong> {product.brand}</p>}
+                    {/* {loggedInUser?.isAdmin && ( */}
                         <>
                             <div style={{position: "absolute", top:"0", right: "0", backgroundColor: "#fff", borderRadius: "2px"}}>
                                 <Link to={`/edit/${product.id}`} state={{"product": product}}>
@@ -67,7 +70,7 @@ const ProductCard = ({product}) => {
                                 </Modal>
                              </div>
                         </>
-                    )}
+                    {/* )} */}
                     <Link to={`/products/${product.id}`} state={{"product": product}}><Button variant="contained" style={{width: "100%"}}>View Details</Button></Link>
                 </div>
             </div>

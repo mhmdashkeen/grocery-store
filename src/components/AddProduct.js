@@ -18,10 +18,17 @@ import { LoadingButton } from '@mui/lab';
 const formObject = {
   name: "",
   description: "",
-  price: 0,
+  buyPrice: 0,
+  sellPrice: 0,
   category: "",
-  discountPercentage: 0,
-  thumbnail: ""
+  discount: 0,
+  thumbnail: "",
+  brand: "",
+  weight: "",
+  available: true,
+  saleIn: "kg",
+  profit: 0,
+  profitPercentage: 0
 } 
 const AddProduct = () => {
   const blue = {
@@ -124,14 +131,38 @@ const AddProduct = () => {
       }
     }, []);
 
-    // console.log('STTE', formValues, categories);
+    const handleSellChange = (e) => {
+        const profit = e.target.value - formValues.buyPrice;
+        const profitPercentage = (e.target.value - formValues.buyPrice) * 100 / e.target.value + "%";
+        const discount = parseInt(profitPercentage) > 10 ? 0 : null;
+        setFormValues((prevState) => ({
+        ...prevState,
+        profit,
+        profitPercentage,
+        discount
+        }))
+    }
+
+    const handleBuyChange = (e) => {
+      const profit = formValues.sellPrice - e.target.value;
+      const profitPercentage = parseInt(profit * 100 / formValues.sellPrice) + "%";
+      const discount = parseInt(profitPercentage);
+      setFormValues((prevState) => ({
+      ...prevState,
+      profit,
+      profitPercentage,
+      discount
+      }))
+  }
+
+    console.log('STTE', formValues);
 
     return (
         <div className="container" style={{padding: "30px 0px"}}>
           <div className='row'>
             <div className='col-6'>
               <div className="form-group">
-                <TextField id="standard-basic" fullWidth label="Name" variant="standard" type="text" id="name"
+                <TextField fullWidth label="Name" variant="standard" type="text" id="name"
                   required
                   value={formValues.name}
                   onChange={(e) => {
@@ -144,7 +175,7 @@ const AddProduct = () => {
               </div>
             </div>
 
-            <div className='col-6'>
+            {/* <div className='col-6'>
               <div className="form-group">
                <Textarea aria-label="Description" required minRows={3}  placeholder="Description" value={formValues.description}
                   onChange={(e) => {
@@ -155,24 +186,57 @@ const AddProduct = () => {
                   }}
                   name="description"/>
               </div>
-            </div>
+            </div> */}
 
             <div className='col-6'>
               <div className="form-group">
-              <TextField id="standard-basic" fullWidth label="Price" variant="standard" type="number" id="price"
+              <TextField fullWidth label="Buy price" variant="standard" type="number" id="buyPrice"
                   required
-                  value={formValues.price}
+                  value={formValues.buyPrice}
                   onChange={(e) => {
                     setFormValues((prevState) => ({
                     ...prevState,
-                    price: e.target.value
+                    buyPrice: parseInt(e.target.value)
                     }))
                   }}
-                  name="price"/>
+                  onBlur={(e) => handleBuyChange(e)}
+                  name="buyPrice"/>
               </div>
             </div>
 
             <div className='col-6'>
+              <div className="form-group">
+              <TextField fullWidth label="Sell Price" variant="standard" type="number" id="sellPrice"
+                  required
+                  value={formValues.sellPrice}
+                  onChange={(e) => setFormValues((prevState) => ({
+                    ...prevState,
+                    sellPrice: parseInt(e.target.value)
+                    }))}
+                  onBlur={(e) => handleSellChange(e)}
+                  name="sellPrice"/>
+              </div>
+            </div>
+
+            <div className='col-6'>
+              <div className="form-group">
+              <TextField fullWidth label="Profit" variant="standard" type="number" id="profit"
+                  value={formValues.profit}
+                  readonly
+                  name="profit"/>
+              </div>
+            </div>
+
+            <div className='col-6'>
+              <div className="form-group">
+              <TextField fullWidth label="Profit Percentage" variant="standard" type="text" id="profitPercentage"
+                  value={formValues.profitPercentage}
+                  readonly
+                  name="profitPercentage"/>
+              </div>
+            </div>
+
+            {/* <div className='col-6'>
               <div className="form-group">
               <FormControl variant="standard" fullWidth>
                 <InputLabel id="demo-simple-select-standard-label">Category</InputLabel>
@@ -191,26 +255,25 @@ const AddProduct = () => {
                 </Select>
               </FormControl>
               </div>
-            </div>
-
-            <div className='col-6'>
+            </div> */}
+           <div className='col-6'>
               <div className="form-group">
-              <TextField id="standard-basic" fullWidth label="Discount Percentage" variant="standard" type="number" id="discountPercentage"
+              <TextField fullWidth label="Discount" variant="standard" type="number" id="discount"
                   required
-                  value={formValues.discountPercentage}
+                  value={formValues.discount}
                   onChange={(e) => {
                     setFormValues((prevState) => ({
                     ...prevState,
-                    discountPercentage: e.target.value
+                    discount: e.target.value
                     }))
                   }}
-                  name="discountPercentage"/>
+                  name="discount"/>
               </div>
             </div>
             
-            <div className='col-6'>
+            {/* <div className='col-6'>
               <div className="form-group">
-              <TextField id="standard-basic" fullWidth label="Thumbnail" variant="standard" type="url" id="thumbnail"
+              <TextField fullWidth label="Thumbnail" variant="standard" type="url" id="thumbnail"
                   required
                   value={formValues.thumbnail}
                   onChange={(e) => {
@@ -220,6 +283,76 @@ const AddProduct = () => {
                     }))
                   }}
                   name="thumbnail"/>
+              </div>
+            </div> */}
+            <div className='col-6'>
+              <div className="form-group">
+              <TextField fullWidth label="Brand" variant="standard" type="text" id="brand"
+                  required
+                  value={formValues.brand}
+                  onChange={(e) => {
+                    setFormValues((prevState) => ({
+                    ...prevState,
+                    brand: e.target.value
+                    }))
+                  }}
+                  name="brand"/>
+              </div>
+            </div>
+            <div className='col-6'>
+              <div className="form-group">
+              <TextField fullWidth label="Weight" variant="standard" type="text" id="weight"
+                  required
+                  value={formValues.weight}
+                  onChange={(e) => {
+                    setFormValues((prevState) => ({
+                    ...prevState,
+                    weight: e.target.value
+                    }))
+                  }}
+                  name="weight"/>
+              </div>
+            </div>
+            <div className='col-6'>
+              <div className="form-group">
+              <FormControl variant="standard" fullWidth>
+                <InputLabel id="available">Available</InputLabel>
+                <Select
+                  labelId="available"
+                  id="available"
+                  value={formValues.available}
+                  onChange={(e) => setFormValues((prevState) => ({
+                    ...prevState,
+                    available: e.target.value
+                    }))}
+                  label="available"
+                  name="available"
+                >
+                  <MenuItem key="yes" value="yes">Yes</MenuItem>
+                  <MenuItem key="no" value="no">No</MenuItem>
+                </Select>
+              </FormControl>
+              </div>
+            </div>
+            <div className='col-6'>
+              <div className="form-group">
+              <FormControl variant="standard" fullWidth>
+                <InputLabel id="saleIn">SaleIn</InputLabel>
+                <Select
+                  labelId="saleIn"
+                  id="saleIn"
+                  value={formValues.saleIn}
+                  onChange={(e) => setFormValues((prevState) => ({
+                    ...prevState,
+                    saleIn: e.target.value
+                    }))}
+                  label="saleIn"
+                  name="saleIn"
+                >
+                  <MenuItem key="kg" value="kg">KG</MenuItem>
+                  <MenuItem key="packet" value="packet">Packet</MenuItem>
+                </Select>
+              </FormControl>
               </div>
             </div>
             <div className='col text-right'>

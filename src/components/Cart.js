@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { removeCart } from '../slice/Cart';
 import CartIncDec from './CartIncDec';
-import cart from "../../public/assets/img/cart.png";
 
 const Cart = ({addRemoveCart, onCheckout}) => {
     const cartItems = useSelector(state => state.cart);
@@ -16,7 +15,7 @@ const Cart = ({addRemoveCart, onCheckout}) => {
                             <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 20px", boxShadow: "1px 1px 7px #d3d3d3", marginBottom: "30px", borderRadius: "4px"}}>
                                 <div style={{display: "flex", alignItems: "center"}}>
                                     <div style={{marginRight: "20px"}}>
-                                        <img style={{width: "180px", height: "180px"}} src={cart.thumbnail} />
+                                        <img style={{width: "180px", height: "180px"}} src="" />
                                     </div>
                                     <div>
                                         <div><b>{cart.name}</b></div>
@@ -50,7 +49,7 @@ const Cart = ({addRemoveCart, onCheckout}) => {
         return (
             <div className="container">
                 <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
-                    <img src={cart} alt="empty-cart-img" width={500}/>
+                    <img src="" alt="empty-cart-img" width={500}/>
                     <button className="btn btn-primary" onClick={() => navigate("/products")}>
                         Go Back to Add Some Products
                     </button>

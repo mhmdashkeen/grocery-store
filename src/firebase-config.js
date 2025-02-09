@@ -1,21 +1,22 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "@firebase/firestore";
 import { getAuth } from "@firebase/auth";
-import { getAnalytics } from "firebase/analytics";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDsx2Hgxid1owK8fHk985KUz42Zg9GbZg8",
-  authDomain: "react-ecommerce-91985.firebaseapp.com",
-  projectId: "react-ecommerce-91985",
-  storageBucket: "react-ecommerce-91985.appspot.com",
-  messagingSenderId: "875754212886",
-  appId: "1:875754212886:web:17c976e404aacd257d6f37",
-  measurementId: "G-L34L5QM572"
+  apiKey: "AIzaSyAXNjUaJxkOHMCpFLKCByYdlXMSOjzmfeg",
+  authDomain: "grocery-mart-50693.firebaseapp.com",
+  projectId: "grocery-mart-50693",
+  storageBucket: "grocery-mart-50693.firebasestorage.app",
+  messagingSenderId: "60791456815",
+  appId: "1:60791456815:web:183f9aeedf606de67e72da",
+  measurementId: "G-0N3LHHVJQ3"
 };
 
 // Initialize Firebase

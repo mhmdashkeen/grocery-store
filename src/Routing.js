@@ -52,18 +52,18 @@ const Routing = () => {
             <Header/>
             <div style={{minHeight: "calc(100vh - 111px)"}}>
                 <Routes>
-                    <Route path="/cart" element={<Suspense fallback={<ScreenLoader />}><Cart addRemoveCart={cartAddition}/></Suspense>} />
-                    <Route path="/add" element={<Suspense fallback={<ScreenLoader />}><ProtectedRoute><Add /></ProtectedRoute></Suspense>} />
-                    <Route path="/edit/:id" element={<Suspense fallback={<ScreenLoader />}><ProtectedRoute><AddProduct /></ProtectedRoute></Suspense>} />
-                    <Route path="/checkout" element={<Suspense fallback={<ScreenLoader />}><ProtectedRoute><Checkout /></ProtectedRoute></Suspense>} />
-                    <Route path="/orders" element={<Suspense fallback={<ScreenLoader />}><ProtectedRoute><Orders /></ProtectedRoute></Suspense>} />
-                    <Route path="/login" element={<Suspense fallback={<ScreenLoader />}><Login /></Suspense>} />
-                    <Route path="/login-otp" element={<Suspense fallback={<ScreenLoader />}><LoginOTP /></Suspense>} />
-                    <Route path="/signup" element={<Suspense fallback={<ScreenLoader />}><Signup /></Suspense>} />
-                    <Route path="/products/:id" element={<Suspense fallback={<ScreenLoader />}><SingleProduct addRemoveCart={cartAddition}/></Suspense>} />
-                    <Route path="/products" element={<Suspense fallback={<ScreenLoader />}><ProductListing/></Suspense>} />
-                    <Route path="/wishlist" element={<Suspense fallback={<ScreenLoader />}><WishList /></Suspense>} /> 
-                    <Route path="/about" element={<Suspense fallback={<ScreenLoader />}><About /></Suspense>} /> 
+                    {/* <Route path="/cart" element={<Cart addRemoveCart={cartAddition}/>} /> */}
+                    <Route path="/add" element={<Add />} />
+                    <Route path="/edit/:id" element={<AddProduct />} />
+                    {/* <Route path="/checkout" element={<Checkout />} /> */}
+                    {/* <Route path="/orders" element={<Orders />} /> */}
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/login-otp" element={<LoginOTP />} />
+                    <Route path="/signup" element={<Signup />} />
+                    {/* <Route path="/products/:id" element={<SingleProduct addRemoveCart={cartAddition}/>} /> */}
+                    <Route path="/products" element={<ProductListing/>} />
+                    {/* <Route path="/wishlist" element={<WishList />} />  */}
+                    <Route path="/about" element={<About />} /> 
                     <Route exact path="/" element={<Home />} />
                     <Route path="*" element={<ErrorPage />} />
                 </Routes>
