@@ -10,7 +10,7 @@ import ErrorPage from './components/ErrorPage';
 import ScreenLoader from './components/ScreenLoader';
 import Add from './components/Add';
 
-const About = lazy(() => import('./components/AboutUs'));
+// const About = lazy(() => import('./components/AboutUs'));
 const WishList = lazy(() => import('./components/WishList'));
 const ProductListing = lazy(() => import('./components/ProductListing'));
 const SingleProduct = lazy(() => import('./components/SingleProduct'));
@@ -63,7 +63,7 @@ const Routing = () => {
                     {/* <Route path="/products/:id" element={<SingleProduct addRemoveCart={cartAddition}/>} /> */}
                     <Route path="/products" element={<ProductListing/>} />
                     {/* <Route path="/wishlist" element={<WishList />} />  */}
-                    <Route path="/about" element={<About />} /> 
+                    {/* <Route path="/about" element={<About />} />  */}
                     <Route exact path="/" element={<Home />} />
                     <Route path="*" element={<ErrorPage />} />
                 </Routes>
