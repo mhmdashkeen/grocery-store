@@ -34,7 +34,7 @@ const SingleProduct = ({addRemoveCart}) => {
         setMatchCart(getCartWithProduct);
     }, [cart]);
 
-    // console.log("Stat", product);
+    console.log("Stat", product);
 
     return (
         <div className="container">
@@ -44,13 +44,15 @@ const SingleProduct = ({addRemoveCart}) => {
                     <hr/>
                     <div style={{display: "flex", gap: "50px"}}>
                         <div>
-                            <img src={product?.thumbnail} className="card-img-top" alt="" style={{minWidth: "300px", maxHeight: "300px", objectFit: "cover"}}/>
+                        {product?.thumbnail && <img src={product?.thumbnail} className="card-img-top" alt="" style={{minWidth: "300px", maxHeight: "300px", objectFit: "cover"}}/>}
                         </div>
                         <div>
                         <h3 className="card-title">{product?.name}</h3>
-                        <p className="card-text">{product?.description}</p>
-                        <p className="card-text"><strong>Category:</strong> {product?.category}</p>
-                        <p className="card-text"><strong>Price: <span style={{color: "green", fontSize: "18px"}}>{product?.discountPercentage}%</span></strong> <s>${product?.price}</s> <strong>${actualPrice}</strong></p>
+                        {product?.description && <p className="card-text">{product?.description}</p>}
+                        {product?.category && <p className="card-text"><strong>Category:</strong> {product?.category}</p>}
+                        <p className="card-text"><strong>Price:</strong> {product.discount > 0 ? `₹${product.sellPrice - parseInt(product.discount)}/${product.saleIn}` : ""} ₹{product.sellPrice}</p>
+                        {product.weight && <p className="card-text"><strong>Weight:</strong> {product.weight}{product.saleIn}</p>}
+                        {product.brand && <p className="card-text"><strong>Brand:</strong> {product.brand}</p>}
                         {matchCart?.quantity > 0 ? <><CartIncDec addRemoveCart={addRemoveCart} product={matchCart}  disableDec={true}/>
                         <Link to={"/cart"} style={{width: "100%"}} className="btn btn-primary mt-3">Go to Cart</Link>
                         </> : <Stack spacing={2} direction="row" justifyContent={"start"}>

@@ -1,115 +1,187 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link } from "react-router-dom";
-import { auth } from "./../firebase-config";
-import { signOut } from "@firebase/auth";
-import Avatar from '@mui/material/Avatar';
-import { stringAvatar } from '../utils/helper';
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { getCart } from "../slice/Cart";
+import AdbIcon from '@mui/icons-material/Adb';
+import { Link } from 'react-router-dom';
+// import useFetch from '../../hooks/useFetch';
 
+const pages = ['Products', 'Pricing', 'Blog', "Maintenance"];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-const Header = () => {
-    const cartItems = useSelector(state => state.cart);
-    const dispatch = useDispatch();
-    const loggedInUser = useSelector(state => state.loggedInUser);
-    // console.log("Logged", loggedInUser);
+function HeaderNav() {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-    const logout = () => {
-        signOut(auth);
-        sessionStorage.removeItem("userData");
-        location.href = "/";
-    }
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-      setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
+  const listingBody = {
+    "pageIndex": 0,
+    "pageSize": 10,
+    "searchValue": "",
+    "sortActive": "name",
+    "sortOrder": "asc"
+  }
+//   const {data, loading, error} = useFetch("/category/menu", listingBody);
 
-    useEffect(() => {
-        dispatch(getCart());
-    }, []);
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
 
-    return (
-        
-            <nav className="navbar navbar-expand navbar-dark bg-dark"  style={{justifyContent: "space-between"}}>
-                <div className='container' style={{paddingLeft: "15px", paddingRight: "15px"}}>
-                    <Link to={"/"} className="navbar-brand">
-                        Ecommerce
-                    </Link>
-                    <div style={{display: "flex"}}>
-                    <div className="navbar-nav">
-                        <li className="nav-item">
-                        <Link to={"/"} className="nav-link">
-                            Home
-                        </Link>
-                        </li>
-                        {/* <li className="nav-item">
-                            <Link to={"/about"} className="nav-link">
-                                About us
-                            </Link>
-                        </li> */}
-                        {loggedInUser?.isAdmin && <li className="nav-item">
-                        <Link to={"/add"} className="nav-link">
-                            Add
-                        </Link>
-                        </li>}
-                        <li className="nav-item">
-                            <Link to={"/products"} className="nav-link">
-                                Products
-                            </Link>
-                        </li>
-                        {/* <li className="nav-item">
-                            <Link to={"/wishlist"} className="nav-link">
-                                Wishlist
-                            </Link>
-                        </li> */}
-                        {/* {loggedInUser && <li className="nav-item">
-                        <Link to={"/orders"} className="nav-link">
-                            Orders
-                        </Link>
-                        </li>}
-                        <li className="nav-item">
-                            <Link to={"/cart"} className="btn btn-secondary">
-                                Cart <span className="badge badge-light">{cartItems.length}</span>
-                            </Link>
-                        </li> */}
-                    </div>
-                    {!loggedInUser && <><Link to={"/login"} className="nav-link">
-                        Login
-                    </Link><Link to={"/signup"} className="nav-link">
-                            Register
-                        </Link></>}
-                    <div className="navbar-nav">
-                        {loggedInUser && (<>{loggedInUser.photoURL ? <img src={loggedInUser.photoURL} alt="Avatar" style={{width: "38px", height: "38px", borderRadius: "50%", marginLeft: "8px", cursor: "pointer"}} onClick={handleClick}/> : <Avatar onClick={handleClick}/>}
-                        <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                            MenuListProps={{
-                            'aria-labelledby': 'basic-button',
-                            }}
-                        >
-                            {loggedInUser.displayName ? <MenuItem>{loggedInUser.displayName}</MenuItem> : ""}
-                            <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleClose}>My account</MenuItem>
-                            <MenuItem onClick={() => {
-                                handleClose();
-                                logout();
-                            }
-                            }>Logout</MenuItem>
-                        </Menu></>)
-                        }
-                    </div>
-                    </div>
-                </div>
-            </nav>
-    );
+  const handleCloseNavMenu = () => {
+    console.log("calling");
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+//   console.log("Data", data);
+
+  return (
+    <AppBar position="static">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            LOGO
+          </Typography>
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={anchorElNav}
+              onClose={handleCloseNavMenu}
+              sx={{ display: { xs: 'block', md: 'none' } }}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href="#app-bar-with-responsive-menu"
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            LOGO
+          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          {/* {data && data.map((page) => (
+              <Link to={`/${page.name.toLowerCase()}`} key={page._id}>
+                <Button
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {page.name}
+                </Button>
+              </Link>
+          ))} */}
+          </Box>
+          <Link to="/login">
+              <Button
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Login
+              </Button>
+            </Link>
+            <Link to="/signup">
+              <Button
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                SignUp
+              </Button>
+            </Link>
+          {/* <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={anchorElUser}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box> */}
+        </Toolbar>
+      </Container>
+    </AppBar>
+  );
 }
- 
-export default React.memo(Header);
+export default HeaderNav;

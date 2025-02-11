@@ -60,7 +60,7 @@ const Routing = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/login-otp" element={<LoginOTP />} />
                     <Route path="/signup" element={<Signup />} />
-                    {/* <Route path="/products/:id" element={<SingleProduct addRemoveCart={cartAddition}/>} /> */}
+                    <Route path="/products/:id" element={<SingleProduct addRemoveCart={cartAddition}/>} />
                     <Route path="/products" element={<ProductListing/>} />
                     {/* <Route path="/wishlist" element={<WishList />} />  */}
                     {/* <Route path="/about" element={<About />} />  */}

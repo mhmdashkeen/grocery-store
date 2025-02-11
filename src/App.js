@@ -5,6 +5,7 @@ import { signOut } from "@firebase/auth";
 import { addUser } from "./slice/User";
 import { ToastContainer } from 'react-toastify';
 import Routing from "./Routing";
+import { BrowserRouter as Router } from "react-router-dom";
 import ScreenLoader from './components/ScreenLoader';
 import "./App.css";
 
@@ -30,7 +31,9 @@ const App = () =>{
     return (
         <React.Fragment>
             <Suspense fallback={<ScreenLoader />}>
-                <Routing/>
+                <Router>
+                    <Routing/>
+                </Router>
             </Suspense>
             <ToastContainer />
         </React.Fragment>
