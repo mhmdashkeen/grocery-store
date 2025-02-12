@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack-dev-server .",
     "build": "webpack .",
-    "test": "jest"
+    "test": "jest",
+    "deploy": "npm run build && firebase deploy"
   },
   "homepage": "/",
   "keywords": [],
