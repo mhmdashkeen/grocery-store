@@ -9,14 +9,12 @@ import Search from './Search';
 import Pagination from './Pagination';
 
 const ProductListing = () => {
-    const productsList = useSelector(state => state.products.productsLists);
-    const [products, setProducts] = useState(productsList);
     const dispatch = useDispatch();
+    const productsList = useSelector(state => state.products.productsLists);
+    const filteredProductsList = useSelector(state => state.products.filteredProductsList);
+    const [products, setProducts] = useState([]);
     const handlePagination = (currentPage, pageSize) => {
-        const a = productsList.slice(currentPage, currentPage + pageSize);
-        setProducts(a);
-        console.log(currentPage, pageSize);
-        console.log("Slice Product", a, products, currentPage + pageSize);
+        setProducts(productsList.slice(currentPage * pageSize, (currentPage * pageSize) + pageSize));
     }
 
     useEffect(() => {
@@ -26,10 +24,9 @@ const ProductListing = () => {
     }, []);
 
     useEffect(() => {
-        const slicedProduct = productsList.slice(0, 4);
+        const slicedProduct = filteredProductsList.slice(0, 10);
         setProducts(slicedProduct);
-    }, [productsList])
-    console.log("Products", productsList, products);
+    }, [filteredProductsList]);
 
     return (
         <Box sx={{ flexGrow: 1 }}>

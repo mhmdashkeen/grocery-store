@@ -32,6 +32,7 @@ export default function Search() {
                 type: 'search',
               },
             }}
+            onChange={() => dispatch(setFilteredProducts(products))}
           />
         )}
       />
