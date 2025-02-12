@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addProduct, editProduct } from '../slice/Product';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import { getCategory } from '../slice/Category';
 import { LoadingButton } from '@mui/lab';
+import Grid from '@mui/material/Grid';
 
 const formObject = {
   name: "",
@@ -89,6 +90,7 @@ const AddProduct = () => {
     const dispatch = useDispatch();
     const [formValues, setFormValues] = useState(state !== null ? state.product : formObject);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const saveProduct = () => {
       setLoading(true);
@@ -123,6 +125,7 @@ const AddProduct = () => {
 
     const handleCancel = () => {
       setFormValues(formObject);
+      navigate("/");
     }
 
     useEffect(() => {
@@ -158,217 +161,142 @@ const AddProduct = () => {
     console.log('STTE', formValues);
 
     return (
-        <div className="container" style={{padding: "30px 0px"}}>
-          <div className='row'>
-            <div className='col-6'>
-              <div className="form-group">
-                <TextField fullWidth label="Name" variant="standard" type="text" id="name"
-                  required
-                  value={formValues.name}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    name: e.target.value
-                    }))
-                  }}
-                  name="name"/>
-              </div>
-            </div>
-
-            {/* <div className='col-6'>
-              <div className="form-group">
-               <Textarea aria-label="Description" required minRows={3}  placeholder="Description" value={formValues.description}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    description: e.target.value
-                    }))
-                  }}
-                  name="description"/>
-              </div>
-            </div> */}
-
-            <div className='col-6'>
-              <div className="form-group">
-              <TextField fullWidth label="Buy price" variant="standard" type="number" id="buyPrice"
-                  required
-                  value={formValues.buyPrice}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    buyPrice: parseInt(e.target.value)
-                    }))
-                  }}
-                  onBlur={(e) => handleBuyChange(e)}
-                  name="buyPrice"/>
-              </div>
-            </div>
-
-            <div className='col-6'>
-              <div className="form-group">
-              <TextField fullWidth label="Sell Price" variant="standard" type="number" id="sellPrice"
-                  required
-                  value={formValues.sellPrice}
-                  onChange={(e) => setFormValues((prevState) => ({
-                    ...prevState,
-                    sellPrice: parseInt(e.target.value)
-                    }))}
-                  onBlur={(e) => handleSellChange(e)}
-                  name="sellPrice"/>
-              </div>
-            </div>
-
-            <div className='col-6'>
-              <div className="form-group">
-              <TextField fullWidth label="Profit" variant="standard" type="number" id="profit"
-                  value={formValues.profit}
-                  readonly
-                  name="profit"/>
-              </div>
-            </div>
-
-            <div className='col-6'>
-              <div className="form-group">
-              <TextField fullWidth label="Profit Percentage" variant="standard" type="text" id="profitPercentage"
-                  value={formValues.profitPercentage}
-                  readonly
-                  name="profitPercentage"/>
-              </div>
-            </div>
-
-            {/* <div className='col-6'>
-              <div className="form-group">
-              <FormControl variant="standard" fullWidth>
-                <InputLabel id="demo-simple-select-standard-label">Category</InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard-label"
-                  value={formValues.category}
-                  onChange={(e) => setFormValues((prevState) => ({
-                    ...prevState,
-                    category: e.target.value
-                    }))}
-                  label="Category"
-                  name="category"
-                >
-                  {categories.map(c => <MenuItem key={c.id} value={c.value}>{c.label}</MenuItem>)}
-                </Select>
-              </FormControl>
-              </div>
-            </div> */}
-           <div className='col-6'>
-              <div className="form-group">
-              <TextField fullWidth label="Discount" variant="standard" type="number" id="discount"
-                  required
-                  value={formValues.discount}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    discount: e.target.value
-                    }))
-                  }}
-                  name="discount"/>
-              </div>
-            </div>
-            
-            {/* <div className='col-6'>
-              <div className="form-group">
-              <TextField fullWidth label="Thumbnail" variant="standard" type="url" id="thumbnail"
-                  required
-                  value={formValues.thumbnail}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    thumbnail: e.target.value
-                    }))
-                  }}
-                  name="thumbnail"/>
-              </div>
-            </div> */}
-            <div className='col-6'>
-              <div className="form-group">
-              <TextField fullWidth label="Brand" variant="standard" type="text" id="brand"
-                  required
-                  value={formValues.brand}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    brand: e.target.value
-                    }))
-                  }}
-                  name="brand"/>
-              </div>
-            </div>
-            <div className='col-6'>
-              <div className="form-group">
-              <TextField fullWidth label="Weight" variant="standard" type="text" id="weight"
-                  required
-                  value={formValues.weight}
-                  onChange={(e) => {
-                    setFormValues((prevState) => ({
-                    ...prevState,
-                    weight: e.target.value
-                    }))
-                  }}
-                  name="weight"/>
-              </div>
-            </div>
-            <div className='col-6'>
-              <div className="form-group">
-              <FormControl variant="standard" fullWidth>
-                <InputLabel id="available">Available</InputLabel>
-                <Select
-                  labelId="available"
-                  id="available"
-                  value={formValues.available}
-                  onChange={(e) => setFormValues((prevState) => ({
-                    ...prevState,
-                    available: e.target.value
-                    }))}
-                  label="available"
-                  name="available"
-                >
-                  <MenuItem key="yes" value="yes">Yes</MenuItem>
-                  <MenuItem key="no" value="no">No</MenuItem>
-                </Select>
-              </FormControl>
-              </div>
-            </div>
-            <div className='col-6'>
-              <div className="form-group">
-              <FormControl variant="standard" fullWidth>
-                <InputLabel id="saleIn">SaleIn</InputLabel>
-                <Select
-                  labelId="saleIn"
-                  id="saleIn"
-                  value={formValues.saleIn}
-                  onChange={(e) => setFormValues((prevState) => ({
-                    ...prevState,
-                    saleIn: e.target.value
-                    }))}
-                  label="saleIn"
-                  name="saleIn"
-                >
-                  <MenuItem key="kg" value="kg">KG</MenuItem>
-                  <MenuItem key="packet" value="packet">Packet</MenuItem>
-                </Select>
-              </FormControl>
-              </div>
-            </div>
-            <div className='col text-right'>
-              <Stack spacing={2} direction="row" justifyContent={"end"}>
-                <Button variant="outlined" onClick={handleCancel}>Cancel</Button>
-                <LoadingButton
-                      loading={loading}
-                      variant="contained"
-                      onClick={saveProduct}
-                    >
-                  <span>{state !== null ? "Update" : "Add"} Product</span>
-                </LoadingButton>
-              </Stack>
-            </div>
-          </div>
-      </div>
+      <Grid container spacing={4} sx={{marginTop: "2rem"}}>
+        <Grid item xs={12} sm={6}>
+          <TextField fullWidth label="Name" variant="standard" type="text" id="name"
+            required
+            value={formValues.name}
+            onChange={(e) => {
+              setFormValues((prevState) => ({
+              ...prevState,
+              name: e.target.value
+              }))
+            }}
+            name="name"/>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Buy price" variant="standard" type="number" id="buyPrice"
+              required
+              value={formValues.buyPrice}
+              onChange={(e) => {
+                setFormValues((prevState) => ({
+                ...prevState,
+                buyPrice: parseInt(e.target.value)
+                }))
+              }}
+              onBlur={(e) => handleBuyChange(e)}
+              name="buyPrice"/>  
+        </Grid>
+        <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Sell Price" variant="standard" type="number" id="sellPrice"
+              required
+              value={formValues.sellPrice}
+              onChange={(e) => setFormValues((prevState) => ({
+                ...prevState,
+                sellPrice: parseInt(e.target.value)
+                }))}
+              onBlur={(e) => handleSellChange(e)}
+              name="sellPrice"/>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Profit" variant="standard" type="number" id="profit"
+              value={formValues.profit}
+              readonly
+              name="profit"/>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField fullWidth label="Profit Percentage" variant="standard" type="text" id="profitPercentage"
+            value={formValues.profitPercentage}
+            readonly
+            name="profitPercentage"/>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField fullWidth label="Discount" variant="standard" type="number" id="discount"
+            required
+            value={formValues.discount}
+            onChange={(e) => {
+              setFormValues((prevState) => ({
+              ...prevState,
+              discount: e.target.value
+              }))
+            }}
+            name="discount"/>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Brand" variant="standard" type="text" id="brand"
+              required
+              value={formValues.brand}
+              onChange={(e) => {
+                setFormValues((prevState) => ({
+                ...prevState,
+                brand: e.target.value
+                }))
+              }}
+              name="brand"/>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Weight" variant="standard" type="text" id="weight"
+              required
+              value={formValues.weight}
+              onChange={(e) => {
+                setFormValues((prevState) => ({
+                ...prevState,
+                weight: e.target.value
+                }))
+              }}
+              name="weight"/>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+            <FormControl variant="standard" fullWidth>
+              <InputLabel id="available">Available</InputLabel>
+              <Select
+                labelId="available"
+                id="available"
+                value={formValues.available}
+                onChange={(e) => setFormValues((prevState) => ({
+                  ...prevState,
+                  available: e.target.value
+                  }))}
+                label="available"
+                name="available"
+              >
+                <MenuItem key="yes" value="yes">Yes</MenuItem>
+                <MenuItem key="no" value="no">No</MenuItem>
+              </Select>
+            </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+            <FormControl variant="standard" fullWidth>
+              <InputLabel id="saleIn">SaleIn</InputLabel>
+              <Select
+                labelId="saleIn"
+                id="saleIn"
+                value={formValues.saleIn}
+                onChange={(e) => setFormValues((prevState) => ({
+                  ...prevState,
+                  saleIn: e.target.value
+                  }))}
+                label="saleIn"
+                name="saleIn"
+              >
+                <MenuItem key="kg" value="kg">KG</MenuItem>
+                <MenuItem key="packet" value="packet">Packet</MenuItem>
+              </Select>
+            </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={12}>
+            <Stack spacing={2} direction="row" justifyContent={"end"}>
+              <Button variant="outlined" onClick={handleCancel}>Cancel</Button>
+              <LoadingButton
+                    loading={loading}
+                    variant="contained"
+                    onClick={saveProduct}
+                  >
+                <span>{state !== null ? "Update" : "Add"} Product</span>
+              </LoadingButton>
+            </Stack>
+        </Grid>
+      </Grid>
     );
 }
  

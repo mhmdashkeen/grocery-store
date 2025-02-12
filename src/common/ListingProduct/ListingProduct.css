@@ -96,6 +96,8 @@
     white-space: nowrap;
     overflow: hidden;
     padding: 0;
+    font-size: 20px;
+    font-weight: 500;
 }
 .listing--price--original{
     display: inline-block;

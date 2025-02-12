@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import ErrorPage from './components/ErrorPage';
 import ScreenLoader from './components/ScreenLoader';
 import Add from './components/Add';
+import Container from '@mui/material/Container';
 
 // const About = lazy(() => import('./components/AboutUs'));
 const WishList = lazy(() => import('./components/WishList'));
@@ -50,7 +51,7 @@ const Routing = () => {
     return (
         <React.Fragment>
             <Header/>
-            <div style={{minHeight: "calc(100vh - 111px)"}}>
+            <Container maxWidth="xl">
                 <Routes>
                     {/* <Route path="/cart" element={<Cart addRemoveCart={cartAddition}/>} /> */}
                     <Route path="/add" element={<Add />} />
@@ -67,7 +68,7 @@ const Routing = () => {
                     <Route exact path="/" element={<Home />} />
                     <Route path="*" element={<ErrorPage />} />
                 </Routes>
-            </div>
+            </Container>
             <Footer />
         </React.Fragment>
     );

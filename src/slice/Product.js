@@ -112,6 +112,8 @@ const productsSlice = createSlice({
                 }
                 const index = state.productsLists.findIndex(product => product.id === action.payload);
                 state.productsLists.splice(index, 1);
+                const filteredIndex = state.filteredProductsList.findIndex(product => product.id === action.payload);
+                state.filteredProductsList.splice(filteredIndex, 1);
             })       
     }
 })

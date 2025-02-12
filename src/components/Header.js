@@ -106,8 +106,8 @@ function HeaderNav() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
+          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
+          {/* <Typography
             variant="h5"
             noWrap
             component="a"
@@ -124,19 +124,24 @@ function HeaderNav() {
             }}
           >
             LOGO
-          </Typography>
+          </Typography> */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-          {/* {data && data.map((page) => (
-              <Link to={`/${page.name.toLowerCase()}`} key={page._id}>
-                <Button
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page.name}
-                </Button>
-              </Link>
-          ))} */}
+            <Link to="/add">
+              <Button
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Add products
+              </Button>
+            </Link>
           </Box>
-          <Link to="/login">
+          <Link to="/add">
+              <Button
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Add products
+              </Button>
+            </Link>
+          {/* <Link to="/login">
               <Button
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
@@ -149,7 +154,7 @@ function HeaderNav() {
               >
                 SignUp
               </Button>
-            </Link>
+            </Link> */}
           {/* <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

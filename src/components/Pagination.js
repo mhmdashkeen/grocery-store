@@ -24,11 +24,11 @@ export default function PaginationComponent({handlePagination}) {
   }, [totalCount]);
 
   console.log("Page", page, "TOT", totalCount, "AA", pageCount, "aa", filteredProductsList);
-  if(totalCount < pageSize){
+  if(totalCount <= pageSize){
     return null;
   }
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} sx={{ marginTop: "1.5rem", justifyContent: "center", alignItems: "center"}}>
       <Pagination count={pageCount} page={page} onChange={handleChange} />
     </Stack>
   );

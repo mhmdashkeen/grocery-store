@@ -18,9 +18,7 @@ const ProductListing = () => {
     }
 
     useEffect(() => {
-        if(productsList.length === 0){
-            dispatch(getProducts());
-        }
+        dispatch(getProducts());
     }, []);
 
     useEffect(() => {
