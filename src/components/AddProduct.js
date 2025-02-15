@@ -136,25 +136,21 @@ const AddProduct = () => {
 
     const handleSellChange = (e) => {
         const profit = e.target.value - formValues.buyPrice;
-        const profitPercentage = (e.target.value - formValues.buyPrice) * 100 / e.target.value + "%";
-        const discount = parseInt(profitPercentage) > 10 ? 0 : null;
+        const profitPercentage = Math.floor((e.target.value - formValues.buyPrice) * 100 / e.target.value) + "%";
         setFormValues((prevState) => ({
         ...prevState,
         profit,
-        profitPercentage,
-        discount
+        profitPercentage
         }))
     }
 
     const handleBuyChange = (e) => {
       const profit = formValues.sellPrice - e.target.value;
-      const profitPercentage = parseInt(profit * 100 / formValues.sellPrice) + "%";
-      const discount = parseInt(profitPercentage);
+      const profitPercentage = Math.floor(parseInt(profit * 100 / formValues.sellPrice)) + "%";
       setFormValues((prevState) => ({
       ...prevState,
       profit,
-      profitPercentage,
-      discount
+      profitPercentage
       }))
   }
 
@@ -210,7 +206,8 @@ const AddProduct = () => {
             readonly
             name="profitPercentage"/>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        
+        {parseInt(formValues.profitPercentage) > 10 ? <Grid item xs={12} sm={6}>
           <TextField fullWidth label="Discount" variant="standard" type="number" id="discount"
             required
             value={formValues.discount}
@@ -221,7 +218,8 @@ const AddProduct = () => {
               }))
             }}
             name="discount"/>
-        </Grid>
+            
+        </Grid> : ""}
         <Grid item xs={12} sm={6}>
             <TextField fullWidth label="Brand" variant="standard" type="text" id="brand"
               required
@@ -245,6 +243,7 @@ const AddProduct = () => {
                 }))
               }}
               name="weight"/>
+              <p>In gram</p>
         </Grid>
         <Grid item xs={12} sm={6}>
             <FormControl variant="standard" fullWidth>

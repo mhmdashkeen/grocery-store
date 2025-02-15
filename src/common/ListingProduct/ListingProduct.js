@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useDispatch } from 'react-redux';
 import { Stack } from '@mui/material';
+import TextField from '@mui/material/TextField';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -28,6 +29,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function ListingProduct(props) {
   const dispatch = useDispatch();
+  const [rate, setRate] = React.useState(10);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -59,14 +61,24 @@ export default function ListingProduct(props) {
                         {category && <div className="listing--category">{category}</div>}
                         <div className="listing--name">{name}</div>
                         <div className="listing--price">
-                          <div className="listing--price--original">₹{`${sellPrice - parseInt(discount)}/${saleIn}`}</div>
+                          <div className="listing--price--original">₹{`${sellPrice - parseInt(discount ? discount : 0)}/${saleIn}`}</div>
+                          {discount > 0 ? (<>
                           <div className="listing--price--mrp">M.R.P.&nbsp;&nbsp;₹{sellPrice}</div>
-                          <div className="listing--price--discount">(₹{discount} off)</div>
+                          <div className="listing--price--discount">(₹{discount} off)</div></>)
+                          : ""}
                         </div>
                         <div className="listing--details--weight">
-                          <div><span className="listing--size--span">Weight:</span> <span className="weight">{weight}{saleIn}</span></div>
+                          <div><span className="listing--size--span">Weight:</span> <span className="weight">{parseInt(weight)/1000}{saleIn}</span></div>
                           {brand && <div><span className="listing--size--span">Brand:</span> <span className="weight">{brand}</span></div>}
                         </div>
+                        <div style={{display: "flex", alignItems: "center"}}>
+                        <span>₹</span>
+                          <TextField fullWidth label="" placeholder="Enter rupees to check gram" variant="standard" type="number" id="rate"
+                            value={rate}
+                            onChange={(e) => setRate(e.target.value)}
+                            name="rate"/>
+                          <span>/{Math.floor(rate / sellPrice * 1000) + "gram"}</span>
+                         </div>
                     </div>
                     {/* {loggedInUser?.isAdmin && ( */}
                     <>
