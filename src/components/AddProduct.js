@@ -26,7 +26,7 @@ const formObject = {
   thumbnail: "",
   brand: "",
   weight: "",
-  available: true,
+  available: "yes",
   saleIn: "kg",
   profit: 0,
   profitPercentage: 0

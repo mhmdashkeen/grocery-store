@@ -22,7 +22,7 @@ const ProductListing = () => {
     }, []);
 
     useEffect(() => {
-        const slicedProduct = filteredProductsList.slice(0, 10);
+        const slicedProduct = filteredProductsList.slice(0, 25);
         setProducts(slicedProduct);
     }, [filteredProductsList]);
 
