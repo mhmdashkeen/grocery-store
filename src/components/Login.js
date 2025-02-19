@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { signin } from '../slice/User';
+import { getAdminValue, signin } from '../slice/User';
 import { useLocation, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { LoadingButton } from '@mui/lab';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
 
 const formObject = {
     email: "",
@@ -23,6 +25,10 @@ const Login = () => {
           dispatch(signin({ email, password }))
           .unwrap()
           .then((data) => {
+            console.log("DATA users", data);
+            const { uid, displayName, email, photoURL } = data;
+            sessionStorage.setItem("userData", JSON.stringify({ uid, displayName, email, photoURL }));
+            dispatch(getAdminValue({uid}));
             setLoading(false);
             if(location.state !== null){
               navigate(location.state.from.pathname);
@@ -37,32 +43,22 @@ const Login = () => {
           })
       }
     return (
-        <div className="submit-form">
-          <form onSubmit={submitForm}>
-            <div className="form-group">
-              <label htmlFor="description">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                required
-                value={formValues.email}
-                onChange={(e) => {
-                  setFormValues((prevState) => ({
-                  ...prevState,
-                  email: e.target.value
-                  }))
-                }}
-                name="email"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="description">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
+      <form onSubmit={submitForm} style={{display: "flex", justifyContent: "center"}} noValidate>
+          <Grid container maxWidth="sm" spacing={2} sx={{marginTop: "1rem", justifyContent: "center"}}>
+            <Grid item xs={12} sm={12}>
+                <TextField fullWidth label="Email" variant="standard" type="email" id="email"
+                  required
+                  value={formValues.email}
+                  onChange={(e) => {
+                    setFormValues((prevState) => ({
+                    ...prevState,
+                    email: e.target.value
+                    }))
+                  }}
+                  name="email"/>
+              </Grid>
+            <Grid item xs={12} sm={12}>
+              <TextField fullWidth label="Password" variant="standard" type="password" id="password"
                 required
                 minLength="8"
                 value={formValues.password}
@@ -72,19 +68,20 @@ const Login = () => {
                   password: e.target.value
                   }))
                 }}
-                name="password"
-              />
-            </div>
-            <LoadingButton
-                loading={loading}
-                variant="contained"
-                type="submit"
-                fullWidth
-              >
-            <span>Login</span>
-          </LoadingButton>
+                name="password"/>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+                <LoadingButton
+                    loading={loading}
+                    variant="contained"
+                    type="submit"
+                    fullWidth
+                  >
+                <span>Login</span>
+              </LoadingButton>
+            </Grid>
+          </Grid>
           </form>
-      </div>
     );
 }
  

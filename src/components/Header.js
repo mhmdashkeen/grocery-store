@@ -12,24 +12,16 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { Link } from 'react-router-dom';
-// import useFetch from '../../hooks/useFetch';
-
-const pages = ['Products', 'Pricing', 'Blog', "Maintenance"];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { signOut } from "@firebase/auth";
+import { auth } from "./../firebase-config";
 
 function HeaderNav() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const listingBody = {
-    "pageIndex": 0,
-    "pageSize": 10,
-    "searchValue": "",
-    "sortActive": "name",
-    "sortOrder": "asc"
-  }
-//   const {data, loading, error} = useFetch("/category/menu", listingBody);
+  const navigate = useNavigate();
+  const loggedInUser = useSelector(state => state.loggedInUser);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -39,7 +31,6 @@ function HeaderNav() {
   };
 
   const handleCloseNavMenu = () => {
-    console.log("calling");
     setAnchorElNav(null);
   };
 
@@ -47,7 +38,13 @@ function HeaderNav() {
     setAnchorElUser(null);
   };
 
-//   console.log("Data", data);
+  const logout = () => {
+    signOut(auth);
+    sessionStorage.removeItem("userData");
+    location.href = "/";
+  }
+
+  console.log("Logged IN", loggedInUser);
 
   return (
     <AppBar position="static">
@@ -99,11 +96,34 @@ function HeaderNav() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                </MenuItem>
-              ))}
+              {loggedInUser?.isAdmin && <MenuItem onClick={() => {
+                handleCloseNavMenu();
+                navigate("/add");
+                }
+              }>
+                <Typography sx={{ textAlign: 'center' }}>Add products</Typography>
+              </MenuItem>}
+              <MenuItem onClick={() => {
+                handleCloseNavMenu();
+                navigate("/");
+                }
+              }>
+                <Typography sx={{ textAlign: 'center' }}>Products</Typography>
+              </MenuItem>
+              {!loggedInUser && <><MenuItem onClick={() => {
+                handleCloseNavMenu();
+                navigate("/signup");
+                }
+              }>
+                <Typography sx={{ textAlign: 'center' }}>SignUp</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => {
+                handleCloseNavMenu();
+                navigate("/login");
+                }
+              }>
+                <Typography sx={{ textAlign: 'center' }}>Login</Typography>
+              </MenuItem></>}
             </Menu>
           </Box>
           {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
@@ -125,42 +145,40 @@ function HeaderNav() {
           >
             LOGO
           </Typography> */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Link to="/add">
+            {/* <Link to="/add">
               <Button
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 Add products
-              </Button>
-            </Link>
-          </Box>
-          <Link to="/add">
-              <Button
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                Add products
-              </Button>
-            </Link>
-          {/* <Link to="/login">
-              <Button
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                Login
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                SignUp
               </Button>
             </Link> */}
-          {/* <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <Button
+              onClick={() => navigate("/add")}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Add products
+            </Button>
+            <Button
+              onClick={() => navigate("/")}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Products
+            </Button>
+          </Box>
+            {!loggedInUser && <><Button
+              onClick={() => navigate("/login")}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Login
+            </Button>
+            <Button
+              onClick={() => navigate("/signup")}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              SignUp
+            </Button></>}
+            {loggedInUser && (<>{loggedInUser.photoURL ? <img src={loggedInUser.photoURL} alt="Avatar" style={{width: "38px", height: "38px", borderRadius: "50%", marginLeft: "8px", cursor: "pointer"}} onClick={handleOpenUserMenu}/> : <Avatar onClick={handleOpenUserMenu}/>}
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
@@ -177,13 +195,16 @@ function HeaderNav() {
               open={anchorElUser}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                {loggedInUser.displayName ? <Typography sx={{ padding: '6px 16px' }}>{loggedInUser.displayName}</Typography> : ""}
+                <Typography sx={{ padding: '6px 16px' }}>{loggedInUser.email}</Typography>
+                <MenuItem onClick={() => {
+                  handleCloseUserMenu();
+                  logout();
+                  }
+                  }>
+                  <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
                 </MenuItem>
-              ))}
-            </Menu>
-          </Box> */}
+            </Menu></>)}
         </Toolbar>
       </Container>
     </AppBar>

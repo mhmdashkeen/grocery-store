@@ -5,8 +5,11 @@ import { addUser, signup } from '../slice/User';
 import { toast } from 'react-toastify';
 import { updateProfile } from "@firebase/auth";
 import { USER_AVATAR } from "../utils/constants";
-import { auth } from "../firebase-config";
+import { auth, db } from "../firebase-config";
 import { LoadingButton } from '@mui/lab';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import { collection, addDoc } from "@firebase/firestore";
 
 const formObject = {
     name: "",
@@ -18,6 +21,7 @@ const Signup = () => {
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const usersRef = collection(db, "users");
 
     const submitForm = e => {
         e.preventDefault();
@@ -25,14 +29,17 @@ const Signup = () => {
         setLoading(true);
           dispatch(signup({ name, email, password }))
           .unwrap()
-          .then((data) => {
+          .then(() => {
             updateProfile(auth.currentUser, {
               displayName: name,
               photoURL: USER_AVATAR
             })
-            .then(() => {
+            .then(async () => {
               const { uid, displayName, email, photoURL } = auth.currentUser;
               dispatch(addUser({ uid, displayName, email, photoURL }));
+              console.log("USER", auth.currentUser);
+              sessionStorage.setItem("userData", JSON.stringify({ uid, displayName, email, photoURL }));
+              await addDoc(usersRef, { uid, displayName, email, photoURL });
             })
             setLoading(false);
             navigate("/");
@@ -44,73 +51,59 @@ const Signup = () => {
       }
 
     return (
-        <div className="submit-form">
-          <form onSubmit={submitForm}>
-          <div className="form-group">
-              <label htmlFor="description">Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                required
-                minLength="3"
-                value={formValues.name}
-                onChange={(e) => {
-                  setFormValues((prevState) => ({
-                  ...prevState,
-                  name: e.target.value
-                  }))
-                }}
-                name="name"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="description">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                required
-                value={formValues.email}
-                onChange={(e) => {
-                  setFormValues((prevState) => ({
-                  ...prevState,
-                  email: e.target.value
-                  }))
-                }}
-                name="email"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="description">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                minLength="8"
-                required
-                value={formValues.password}
-                onChange={(e) => {
-                  setFormValues((prevState) => ({
-                  ...prevState,
-                  password: e.target.value
-                  }))
-                }}
-                name="password"
-              />
-            </div>
-            <LoadingButton
-                loading={loading}
-                variant="contained"
-                type="submit"
-                fullWidth
-              >
-            <span>Signup</span>
-          </LoadingButton>
-          </form>
-         {/* )} */}
-      </div>
+      <form onSubmit={submitForm} style={{display: "flex", justifyContent: "center"}} noValidate>
+        <Grid container maxWidth="sm" spacing={2} sx={{marginTop: "1rem", justifyContent: "center"}}>
+              <Grid item xs={12} sm={12}>
+                <TextField fullWidth label="Name" variant="standard" type="text" id="name"
+                  required
+                  minLength="3"
+                  value={formValues.name}
+                  onChange={(e) => {
+                    setFormValues((prevState) => ({
+                    ...prevState,
+                    name: e.target.value
+                    }))
+                  }}
+                  name="name"/>
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField fullWidth label="Email" variant="standard" type="email" id="email"
+                  required
+                  value={formValues.email}
+                  onChange={(e) => {
+                    setFormValues((prevState) => ({
+                    ...prevState,
+                    email: e.target.value
+                    }))
+                  }}
+                  name="email"/>
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField fullWidth label="Password" variant="standard" type="password" id="password"
+                  required
+                  minLength="8"
+                  value={formValues.password}
+                  onChange={(e) => {
+                    setFormValues((prevState) => ({
+                    ...prevState,
+                    password: e.target.value
+                    }))
+                  }}
+                  name="password"/>
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <LoadingButton
+                    loading={loading}
+                    variant="contained"
+                    type="submit"
+                    fullWidth
+                    sx={{marginTop: "1rem"}}
+                  >
+                <span>Signup</span>
+              </LoadingButton>
+            </Grid>
+      </Grid>
+      </form>
     );
 }
  

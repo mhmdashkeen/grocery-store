@@ -12,10 +12,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Stack } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Switch from '@mui/material/Switch';
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -38,6 +39,7 @@ export default function ListingProduct(props) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [checked, setChecked] = React.useState(true);
+  const loggedInUser = useSelector(state => state.loggedInUser);
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };
@@ -52,15 +54,15 @@ export default function ListingProduct(props) {
     boxShadow: 24,
     p: 4,
   };
-  console.log("PROPS", props.data);
+  // console.log("PROPS", props.data);
   return (
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
           <Item>
             <div className="listing--container">
                 <div className="listing--link">
                     {thumbnail && (<div className="listing--image--container" style={{paddingTop: "120%"}}>
                         <div className="listing--image--div" style={{paddingTop: "120%"}}>
-                            <img className="listing--image" alt={name} src={thumbnail}/>
+                            <LazyLoadImage className="listing--image" alt={name} src={thumbnail}/>
                         </div>
                     </div>
                   )}
@@ -108,7 +110,7 @@ export default function ListingProduct(props) {
                          </>
                         )}
                     </div>
-                    {/* {loggedInUser?.isAdmin && ( */}
+                    {loggedInUser?.isAdmin && (
                     <>
                             <div style={{position: "absolute", top:"-8px", right: "-8px", backgroundColor: "#fff", borderRadius: "2px", zIndex: "2", boxShadow: "0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)"}}>
                                 <IconButton aria-label="delete" color="primary" onClick={() => navigate(`/edit/${id}`, { state: { product: props.data } })}>
@@ -140,7 +142,7 @@ export default function ListingProduct(props) {
                                 </Modal>
                              </div>
                         </>
-                    {/* )} */}
+                    )}
                     <Stack spacing={2} sx={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
                       <Button variant='outlined' onClick={() => navigate(`/products/${id}`, {
                         state: {

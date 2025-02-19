@@ -29,7 +29,8 @@ const formObject = {
   available: "yes",
   saleIn: "kg",
   profit: 0,
-  profitPercentage: 0
+  profitPercentage: 0,
+  thumbnail: ""
 } 
 const AddProduct = () => {
   const blue = {
@@ -153,11 +154,8 @@ const AddProduct = () => {
       profitPercentage
       }))
   }
-
-    console.log('STTE', formValues);
-
     return (
-      <Grid container spacing={4} sx={{marginTop: "2rem"}}>
+      <Grid container spacing={4}>
         <Grid item xs={12} sm={6}>
           <TextField fullWidth label="Name" variant="standard" type="text" id="name"
             required
@@ -282,6 +280,18 @@ const AddProduct = () => {
                 <MenuItem key="packet" value="packet">Packet</MenuItem>
               </Select>
             </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Thumbnail" variant="standard" type="url" id="thumbnail"
+              required
+              value={formValues.thumbnail}
+              onChange={(e) => {
+                setFormValues((prevState) => ({
+                ...prevState,
+                thumbnail: e.target.value
+                }))
+              }}
+              name="thumbnail"/>
         </Grid>
         <Grid item xs={12} sm={12}>
             <Stack spacing={2} direction="row" justifyContent={"end"}>

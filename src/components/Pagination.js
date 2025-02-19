@@ -23,7 +23,7 @@ export default function PaginationComponent({handlePagination}) {
     setPageCount(Math.ceil(totalCount / pageSize));
   }, [totalCount]);
 
-  console.log("Page", page, "TOT", totalCount, "AA", pageCount, "aa", filteredProductsList);
+  // console.log("Page", page, "TOT", totalCount, "AA", pageCount, "aa", filteredProductsList);
   if(totalCount <= pageSize){
     return null;
   }
