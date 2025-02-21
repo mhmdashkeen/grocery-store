@@ -16,7 +16,13 @@ const App = () =>{
     useEffect(() => {
         const userIsThere = JSON.parse(sessionStorage.getItem("userData"));
         if(userIsThere){
-            const { uid } = userIsThere;
+            const { uid, displayName, email, photoURL } = userIsThere;
+            dispatch(addUser({
+                uid,
+                displayName,
+                email,
+                photoURL
+            }));
             dispatch(getAdminValue({uid}));
         }else{
             sessionStorage.removeItem("userData");

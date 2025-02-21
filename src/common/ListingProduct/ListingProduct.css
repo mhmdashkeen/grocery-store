@@ -1,16 +1,16 @@
 .listing--container{
-    font-size: 16px;
+    font-size: 14px;
 }
 .listing--image--container{
-    padding-top: 120%;
+    /* padding-top: 120%; */
     width: 100%;
     position: relative;
 }
 .listing--image--div{
-    padding-top: 120%;
-    position: absolute;
-    top: 0;
-    left: 0;
+    /* padding-top: 120%; */
+    /* position: absolute; */
+    /* top: 0; */
+    /* left: 0; */
     width: 100%;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -23,17 +23,21 @@
     align-items: center;
 }
 .listing--image{
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+    /* position: absolute; */
+    /* top: 0; */
+    /* left: 0; */
+    /* bottom: 0; */
+    /* right: 0; */
     max-width: 100%;
-    max-height: 100%;
+    /* max-height: 100%; */
     transition: opacity .5s linear;
     opacity: 1;
     margin: auto;
     z-index: 0;
+    min-height: 135px;
+    /* max-height: 135px; */
+    object-fit: cover;
+    width: 100%;
 }
 .listing--link{
     text-decoration: none;
@@ -81,7 +85,6 @@
 }
 .listing--category{
     color: #878787;
-    font-size: 14px;
     font-weight: 500;
     width: calc(100% - 40px);
     display: inline-block;
@@ -96,27 +99,21 @@
     white-space: nowrap;
     overflow: hidden;
     padding: 0;
-    font-size: 20px;
-    font-weight: 500;
 }
 .listing--price--original{
     display: inline-block;
-    font-size: 20px;
-    font-weight: 500;
     color: #212121;
 }
 .listing--price--mrp{
     display: inline-block;
     margin-left: 8px;
     text-decoration: line-through;
-    font-size: 14px;
     color: #878787;
 }
 .listing--price--discount{
     color: #388e3c;
     font-size: 14px;
     letter-spacing: -.2px;
-    font-weight: 500;
     display: inline-block;
     margin-left: 8px;
 }
@@ -125,7 +122,6 @@
 }
 .listing--size--span{
     color: #878787;
-    font-weight: 500;
 }
 .listing--details--right > div{
     overflow: hidden;
@@ -189,4 +185,10 @@
 .listing--review{
     line-height: normal;
     margin-left: 8px;
+}
+.listing--price{
+    margin-bottom: 5px;
+}
+.listing--details--brand{
+    margin-top: 5px;
 }

@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid2';
 import "./ListingProduct.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { deleteProducts } from "../../slice/Product";
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -17,6 +17,7 @@ import { Stack } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Switch from '@mui/material/Switch';
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { LoadingButton } from '@mui/lab';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -40,6 +41,7 @@ export default function ListingProduct(props) {
   const handleClose = () => setOpen(false);
   const [checked, setChecked] = React.useState(true);
   const loggedInUser = useSelector(state => state.loggedInUser);
+  const deleteLoading = useSelector(state => state.products.deleteLoading);
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };
@@ -48,37 +50,42 @@ export default function ListingProduct(props) {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: "100%",
+    maxWidth: 400,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4,
+    padding: "10px"
   };
   // console.log("PROPS", props.data);
   return (
-        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+        <Grid size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
           <Item>
             <div className="listing--container">
                 <div className="listing--link">
-                    {thumbnail && (<div className="listing--image--container" style={{paddingTop: "120%"}}>
-                        <div className="listing--image--div" style={{paddingTop: "120%"}}>
+                  <Link to={`/products/${id}`} state={{state: {
+                          product: props.data
+                        }}}>
+                    {thumbnail && (<div className="listing--image--container">
+                        <div className="listing--image--div">
                             <LazyLoadImage className="listing--image" alt={name} src={thumbnail}/>
                         </div>
                     </div>
                   )}
+                  </Link>
                     <div className="listing--details--section">
                         {category && <div className="listing--category">{category}</div>}
                         <div className="listing--name">{name}</div>
                         <div className="listing--price">
-                          <div className="listing--price--original">₹{`${sellPrice - parseInt(discount ? discount : 0)}/${saleIn}`}</div>
+                          <div className="listing--price--original">₹{`${sellPrice - parseInt(discount ? discount : 0)}`}</div>
                           {discount > 0 ? (<>
                           <div className="listing--price--mrp">M.R.P.&nbsp;&nbsp;₹{sellPrice}</div>
                           <div className="listing--price--discount">(₹{discount} off)</div></>)
                           : ""}
                         </div>
                         <div className="listing--details--weight">
-                          <div><span className="listing--size--span">Weight:</span> <span className="weight">{saleIn !== "kg" ?  weight < 1000 ? weight + "g" : (weight/1000) + "Kg" : (weight/1000) + `${saleIn}`}</span></div>
-                          {brand && <div><span className="listing--size--span">Brand:</span> <span className="weight">{brand}</span></div>}
+                          <div><span className="listing--size--span">Weight:</span> <span className="weight">{saleIn !== "kg" ?  weight < 1000 ? weight + " g" : (weight/1000) + " Kg" : (weight/1000) + ` ${saleIn}`}</span></div>
+                          {brand && <div className="listing--details--brand"><span className="listing--size--span">Brand:</span> <span className="weight">{brand}</span></div>}
                         </div>
                         {saleIn === "kg" && (<>
                         <span>g/₹</span>
@@ -136,20 +143,22 @@ export default function ListingProduct(props) {
                                         </Typography>
                                         <Stack spacing={2}>
                                         <Button onClick={handleClose}>Cancel</Button>
-                                        <Button variant="contained" sx={{marginTop: "1rem"}} onClick={() => dispatch(deleteProducts(id))}>Delete</Button>
+                                        <LoadingButton
+                                              loading={deleteLoading}
+                                              variant="contained"
+                                              onClick={() => dispatch(deleteProducts(id))}
+                                              sx={{marginTop: "1rem"}}
+                                            >
+                                          <span>Delete</span>
+                                        </LoadingButton>
                                         </Stack>
                                     </Box>
                                 </Modal>
                              </div>
                         </>
                     )}
-                    <Stack spacing={2} sx={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
-                      <Button variant='outlined' onClick={() => navigate(`/products/${id}`, {
-                        state: {
-                          product: props.data
-                        }
-                      })} style={{width: "calc(50% - 0.5rem)"}}>View Details</Button>
-                      <Button variant="contained" style={{marginTop: "0", width: "calc(50% - 0.5rem)"}}>Add to cart</Button>
+                    <Stack spacing={2}>
+                      <Button variant="outlined">Add to cart</Button>
                     </Stack>
                 </div>
             </div>

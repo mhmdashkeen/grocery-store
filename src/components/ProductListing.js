@@ -7,11 +7,13 @@ import ProductCard from './ProductCard';
 import ListingProduct from '../common/ListingProduct/ListingProduct';
 import Search from './Search';
 import Pagination from './Pagination';
+import ScreenLoader from './ScreenLoader';
 
 const ProductListing = () => {
     const dispatch = useDispatch();
     const productsList = useSelector(state => state.products.productsLists);
     const filteredProductsList = useSelector(state => state.products.filteredProductsList);
+    const isLoading = useSelector(state => state.products.loading);
     const [products, setProducts] = useState([]);
     const handlePagination = (currentPage, pageSize) => {
         setProducts(productsList.slice(currentPage * pageSize, (currentPage * pageSize) + pageSize));
@@ -26,6 +28,8 @@ const ProductListing = () => {
         setProducts(slicedProduct);
     }, [filteredProductsList]);
 
+    console.log("Loading", isLoading);
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <h3>Shop by Collection</h3>
@@ -35,7 +39,7 @@ const ProductListing = () => {
             </p>
             <Search />
             <Grid container spacing={2}>
-            
+            {isLoading && <ScreenLoader inline="inline"/>}
             {/* {products.map(product => <ProductCard key={product.id} product={product}/>)} */}
             {products.map(p => <ListingProduct key={p.id} data={p} />)}
             </Grid>

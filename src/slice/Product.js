@@ -6,7 +6,8 @@ const initialState = {
     productsLists: [],
     filteredProductsList: [],
     singleProduct: {},
-    loading: true,
+    loading: false,
+    deleteLoading: false
 }
 const productsRef = collection(db, "products");
 
@@ -74,24 +75,24 @@ const productsSlice = createSlice({
     extraReducers(builder) {
         builder
             .addCase(getProductById.pending, (state, action) => {
-                if(state.loading){
-                    state.loading = false;
+                if(!state.loading){
+                    state.loading = true;
                 }
             })
             .addCase(getProductById.fulfilled, (state, action) => {
-                if(!state.loading){
-                    state.loading = true;
+                if(state.loading){
+                    state.loading = false;
                 }
                 state.singleProduct = action.payload;
             })
             .addCase(getProducts.pending, (state, action) => {
-                if(state.loading){
-                    state.loading = false;
+                if(!state.loading){
+                    state.loading = true;
                 }
             })
             .addCase(getProducts.fulfilled, (state, action) => {
-                if(!state.loading){
-                    state.loading = true;
+                if(state.loading){
+                    state.loading = false;
                 }
                 state.productsLists = action.payload;
                 state.filteredProductsList = action.payload;
@@ -106,9 +107,14 @@ const productsSlice = createSlice({
             .addCase(getProductsCategory.fulfilled, (state, action) => {
                 state.productsLists = action.payload;
             })
+            .addCase(deleteProducts.pending, (state, action) => {
+                if(!state.deleteLoading){
+                    state.deleteLoading = true;
+                }
+            })
             .addCase(deleteProducts.fulfilled, (state, action) => {
-                if(!state.loading){
-                    state.loading = true;
+                if(state.deleteLoading){
+                    state.deleteLoading = false;
                 }
                 const index = state.productsLists.findIndex(product => product.id === action.payload);
                 state.productsLists.splice(index, 1);

@@ -4,15 +4,12 @@ import ProtectedRoute from "./common/ProtectedRoute";
 import { useDispatch, useSelector } from 'react-redux';
 import { addtocart, updateCart } from './slice/Cart';
 import Header from './components/Header';
-import Home from './components/Home';
 import Footer from './components/Footer';
 import ErrorPage from './components/ErrorPage';
-import ScreenLoader from './components/ScreenLoader';
-import Add from './components/Add';
 import Container from '@mui/material/Container';
 
 // const About = lazy(() => import('./components/AboutUs'));
-const WishList = lazy(() => import('./components/WishList'));
+const Home = lazy(() => import('./components/Home'));
 const ProductListing = lazy(() => import('./components/ProductListing'));
 const SingleProduct = lazy(() => import('./components/SingleProduct'));
 const Signup = lazy(() => import('./components/Signup'));
@@ -22,6 +19,7 @@ const Orders = lazy(() => import('./components/Orders'));
 const Checkout = lazy(() => import('./components/Checkout'));
 const AddProduct = lazy(() => import('./components/AddProduct'));
 const Cart = lazy(() => import('./components/Cart'));
+const Add = lazy(() => import('./components/Add'));
 
 
 
@@ -66,7 +64,7 @@ const Routing = () => {
                     {/* <Route path="/wishlist" element={<WishList />} />  */}
                     {/* <Route path="/about" element={<About />} />  */}
                     <Route exact path="/" element={<Home />} />
-                    <Route path="*" element={<ErrorPage />} />
+                    <Route path="*" element={<Home />} />
                 </Routes>
             </Container>
             <Footer />
