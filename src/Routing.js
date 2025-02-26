@@ -1,12 +1,7 @@
-import React, { lazy, Suspense } from 'react';
-import { Routes, Route } from "react-router-dom";
+import React, { lazy } from 'react';
+import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./common/ProtectedRoute";
-import { useDispatch, useSelector } from 'react-redux';
-import { addtocart, updateCart } from './slice/Cart';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import ErrorPage from './components/ErrorPage';
-import Container from '@mui/material/Container';
+import { useSelector } from 'react-redux';
 
 // const About = lazy(() => import('./components/AboutUs'));
 const Home = lazy(() => import('./components/Home'));
@@ -20,55 +15,26 @@ const Checkout = lazy(() => import('./components/Checkout'));
 const AddProduct = lazy(() => import('./components/AddProduct'));
 const Cart = lazy(() => import('./components/Cart'));
 const Add = lazy(() => import('./components/Add'));
-
-
+const AddAdresses = lazy(() => import('./components/AddAdresses'));
 
 const Routing = () => {
-    const cartItems = useSelector(state => state.cart);
-
-    const dispatch = useDispatch();
-    const cartAddition = (product, opt) => {
-        const cartfilter = cartItems.findIndex(cart => cart.id === product.id);
-        let newQuantity = 1;
-        if(cartfilter >= 0){
-            const updatedCart = [...cartItems];
-            const newCart = {...updatedCart[cartfilter]};
-            if(opt === "increase"){
-                newQuantity = newCart.quantity + newQuantity;
-            }else{
-                newQuantity = newCart.quantity - newQuantity;
-            }
-            
-            newCart.quantity = newQuantity;
-            dispatch(updateCart(newCart));
-        }else{
-            const newProduct = { ...product, quantity: newQuantity };
-            dispatch(addtocart(newProduct));           
-        }       
-    }
+    const loggedInUser = useSelector(state => state.loggedInUser);
     return (
-        <React.Fragment>
-            <Header/>
-            <Container maxWidth="xl">
-                <Routes>
-                    {/* <Route path="/cart" element={<Cart addRemoveCart={cartAddition}/>} /> */}
-                    <Route path="/add" element={<Add />} />
-                    <Route path="/edit/:id" element={<AddProduct />} />
-                    {/* <Route path="/checkout" element={<Checkout />} /> */}
-                    {/* <Route path="/orders" element={<Orders />} /> */}
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/login-otp" element={<LoginOTP />} />
-                    <Route path="/signup" element={<Signup />} />
-                    <Route path="/products/:id" element={<SingleProduct addRemoveCart={cartAddition}/>} />
-                    <Route path="/products" element={<ProductListing/>} />
-                    {/* <Route path="/wishlist" element={<WishList />} />  */}
-                    {/* <Route path="/about" element={<About />} />  */}
-                    <Route exact path="/" element={<Home />} />
-                    <Route path="*" element={<Home />} />
-                </Routes>
-            </Container>
-            <Footer />
-        </React.Fragment>
+            <Routes>
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/add" element={<ProtectedRoute><Add /></ProtectedRoute>} /> {/* protected route */}
+                <Route path="/edit" element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />
+                <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} /> {/* protected route */}
+                <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} /> {/* protected route */}
+                <Route path="/login" element={loggedInUser ? <Navigate to="/products" /> : <Login />} />
+                <Route path="/login-otp" element={loggedInUser ? <Navigate to="/products" /> : <LoginOTP />} />
+                <Route path="/signup" element={loggedInUser ? <Navigate to="/products" /> : <Signup />} />
+                <Route path="/products/:id" element={<SingleProduct/>} />
+                <Route path="/products" element={<ProductListing/>} />
+                <Route path="/adresses" element={<ProtectedRoute><AddAdresses /></ProtectedRoute>} /> {/* protected route */}
+                <Route exact path="/" element={<Home />} />
+                <Route path="*" element={<Home />} />
+            </Routes>
     );
 }
  

@@ -9,8 +9,9 @@ const orderRef = collection(db, "orders");
 export const updateUserWithCart = createAsyncThunk(
     "products/updateUserCart",
     async (data) => {
-        const user = sessionStorage.getItem('token');
-        await addDoc(orderRef, {...data, userId: user.id});
+        const user = JSON.parse(sessionStorage.getItem('userData'));
+        console.log("DATA", data, "USER", user.uid);
+        await addDoc(orderRef, {...data, uid: user.uid});
     }
 )
 
@@ -18,31 +19,20 @@ const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        clearCart: (state) => {
+        clearCart: () => {
             localStorage.removeItem("carts");
-            state = [];
+            return [];
         },
         getCart: () => {
             const cartList = JSON.parse(localStorage.getItem("carts"));
-            if(cartList){
-                return cartList;
-            }else{
-               return [];
-            }
+            return cartList ? cartList : [];
         },
         addtocart: (state, action) => {
-            const carts = localStorage.getItem("carts");
-            if(carts){
-                const cartList = JSON.parse(localStorage.getItem("carts"));
-                cartList.push(action.payload);
-                state.push(action.payload);
-                localStorage.setItem("carts", JSON.stringify(cartList));
-            }else{
-                const cartArray = [];
-                cartArray.push(data);
-                state.push(action.payload);
-                localStorage.setItem("carts", JSON.stringify(cartArray));
+            const existingProduct = state.find((p) => p.id === action.payload.id);
+            if(existingProduct){
+                return state.map((p) => p.id === action.payload.id ? { ...p, quantity: p.quantity + 1} : p);
             }
+            return [...state, { ...action.payload, quantity: 1}];
         },
         updateCart: (state, action) => {
             const cartList = JSON.parse(localStorage.getItem("carts"));

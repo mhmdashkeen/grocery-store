@@ -3,18 +3,8 @@ import {Navigate, useLocation} from "react-router-dom";
 
 const ProtectedRoute = ({children})=> {
     const location = useLocation();
-    // const user = JSON.parse(localStorage.getItem('user'));
     const userData = sessionStorage.getItem('userData');
-
-    if(userData === null){
-        return <Navigate to="/login" state={{ from: location}} replace />
-    }
-
-    if(userData && userData.isAdmin === true) {
-        return children;
-    }
-
-    return children;
+    return userData ? children : <Navigate to="/login" state={{ from: location}} replace />
 }
  
 export default ProtectedRoute;

@@ -18,6 +18,8 @@ import TextField from '@mui/material/TextField';
 import Switch from '@mui/material/Switch';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { LoadingButton } from '@mui/lab';
+import { addtocart } from '../../slice/Cart';
+import { showSnackbar } from '../../slice/Snackbar';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -30,7 +32,7 @@ const Item = styled(Paper)(({ theme }) => ({
   }),
 }));
 
-export default function ListingProduct(props) {
+function ListingProduct(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { name, thumbnail, category, sellPrice, discount, saleIn, weight, id, brand  } = props.data;
@@ -63,9 +65,7 @@ export default function ListingProduct(props) {
           <Item>
             <div className="listing--container">
                 <div className="listing--link">
-                  <Link to={`/products/${id}`} state={{state: {
-                          product: props.data
-                        }}}>
+                  <Link to={`/products/${id}`} state={ { product: props.data } }>
                     {thumbnail && (<div className="listing--image--container">
                         <div className="listing--image--div">
                             <LazyLoadImage className="listing--image" alt={name} src={thumbnail}/>
@@ -120,7 +120,7 @@ export default function ListingProduct(props) {
                     {loggedInUser?.isAdmin && (
                     <>
                             <div style={{position: "absolute", top:"-8px", right: "-8px", backgroundColor: "#fff", borderRadius: "2px", zIndex: "2", boxShadow: "0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)"}}>
-                                <IconButton aria-label="delete" color="primary" onClick={() => navigate(`/edit/${id}`, { state: { product: props.data } })}>
+                                <IconButton aria-label="delete" color="primary" onClick={() => navigate("/edit", { state: { product: props.data } })}>
                                     <EditIcon />
                                 </IconButton>
                                 <IconButton aria-label="delete" color="primary" onClick={handleOpen}>
@@ -158,7 +158,10 @@ export default function ListingProduct(props) {
                         </>
                     )}
                     <Stack spacing={2}>
-                      <Button variant="outlined">Add to cart</Button>
+                      <Button variant="outlined" onClick={() => {
+                        dispatch(addtocart(props.data));
+                        dispatch(showSnackbar("Item added to cart."));
+                        }}>Add to cart</Button>
                     </Stack>
                 </div>
             </div>
@@ -166,3 +169,4 @@ export default function ListingProduct(props) {
         </Grid>
   );
 }
+export default React.memo(ListingProduct);

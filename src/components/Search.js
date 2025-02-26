@@ -18,8 +18,8 @@ export default function Search() {
     <Stack spacing={2} sx={{ maxWidth: 500, width: "100%", justifySelf: "end", marginBottom: "1.5rem" }}>
       <Autocomplete
         freeSolo
-        id="free-solo-2-demo"
         disableClearable
+        id="free-solo-2-demo"
         options={products.map((p) => p.name)}
         onChange={(event, newValue) => handleAutocomplete(newValue)}
         renderInput={(params) => (

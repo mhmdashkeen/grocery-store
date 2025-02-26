@@ -10,6 +10,9 @@ import { LoadingButton } from '@mui/lab';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { collection, addDoc } from "@firebase/firestore";
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+
 
 const formObject = {
     name: "",
@@ -91,16 +94,19 @@ const Signup = () => {
                   }}
                   name="password"/>
               </Grid>
-              <Grid item xs={12} sm={12}>
-                <LoadingButton
-                    loading={loading}
-                    variant="contained"
-                    type="submit"
-                    fullWidth
-                    sx={{marginTop: "1rem"}}
-                  >
-                <span>Signup</span>
-              </LoadingButton>
+            <Grid item xs={12} sm={12}>
+                <Stack spacing={2} direction="column" justifyContent={"end"}>
+                  <LoadingButton
+                      loading={loading}
+                      variant="contained"
+                      type="submit"
+                      fullWidth
+                      sx={{marginTop: "1rem"}}
+                    >
+                  <span>Signup</span>
+                </LoadingButton>
+                    <Button variant="outlined" onClick={() => navigate("/login")}>Login</Button>
+                </Stack>
             </Grid>
       </Grid>
       </form>

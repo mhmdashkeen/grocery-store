@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { auth, db } from "../firebase-config";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "@firebase/auth";
-import { collection, query, getDocs, where } from "@firebase/firestore";
+import { collection, query, getDocs, where, doc, updateDoc } from "@firebase/firestore";
 
 const initialState = null;
 const usersRef = collection(db, "users");
@@ -34,6 +34,25 @@ export const getAdminValue = createAsyncThunk(
     }
 )
 
+export const updateUserAddress = createAsyncThunk(
+    "user/updateUserAddress",
+    async (data) => {
+        const usersDoc = doc(db, "users", data.id);       
+        await updateDoc(usersDoc, data);
+        return data;
+    }
+)
+
+export const updateUserWithOrders = createAsyncThunk(
+    "user/updateUserAddress",
+    async (data) => {
+        const usersDoc = doc(db, "users", data.id);       
+        const aa = await updateDoc(usersDoc, data);
+        console.log("AA", aa);
+        return data;
+    }
+)
+
 const userSlice = createSlice({
     name: "user",
     initialState,
@@ -54,6 +73,9 @@ const userSlice = createSlice({
                 return action.payload;
             })
             .addCase(getAdminValue.fulfilled, (state, action) => {
+                return action.payload;
+            })
+            .addCase(updateUserAddress.fulfilled, (state, action) => {
                 return action.payload;
             })
     }

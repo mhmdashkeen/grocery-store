@@ -1,48 +1,63 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { clearCart, updateUserWithCart } from '../slice/Cart';
+import { updateUserWithOrders } from '../slice/User';
+import { clearCart } from '../slice/Cart';
 import { useNavigate } from 'react-router';
 import Cart from "./Cart";
+import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import { showSnackbar } from '../slice/Snackbar';
 
 const Checkout = () => {
     const cartItems = useSelector(state => state.cart);
     const dispatch = useDispatch();
+    const loggedInUser = useSelector(state => state.loggedInUser);
     const navigate = useNavigate();
     const handleCheckout = () => {
-        dispatch(updateUserWithCart(cartItems))
-        .unwrap()
-        .then((data) => {
-            console.log("Response", data);
-            localStorage.removeItem("carts");
-            dispatch(clearCart());
-            navigate("/orders");
-        })
-        .catch((e) => {
-            console.log("API Error", e);
-        })
+        if(loggedInUser?.address){
+            const updateOrders = {...loggedInUser, orders: {...loggedInUser.orders, ...cartItems}};
+            dispatch(updateUserWithOrders(updateOrders))
+            .unwrap()
+            .then((data) => {
+                console.log("Response", data);
+                dispatch(clearCart());
+                navigate("/orders");
+            })
+            .catch((e) => {
+                console.log("API Error", e);
+            })
+        }else{
+            dispatch(showSnackbar("Please add address then checkout"))
+        }
+
     }
-    
     return (
-        <div>
-            <h1>Checkout</h1>
-            <div className='row'>
-                <div className='col'>
-                    Contact Info
+        <>
+            <div>Checkout</div>
+            <Grid item xs={12}>
+                {loggedInUser?.address ? (<>
+                    Deliver to:
+                    <Button variant="outlined" onClick={() => navigate("/adresses", { state: { address: loggedInUser.address } })}>Edit address</Button>
+                    <div><b>{loggedInUser.address.fullName}</b></div>
+                    <div>{loggedInUser.address.houseNumber}, {loggedInUser.address.nearBy}, {loggedInUser.address.city} {loggedInUser.address.pinCode}</div>
+                    <div>{loggedInUser.address.phone}</div>
+                    </>) : <div className='col'>
+                    No address found
+                    <Button variant="outlined" onClick={() => navigate("/adresses")}>+ Add new address</Button>
                 </div>
+                }
                 <div className='col'>
                     <Cart onCheckout={true}/>
                 </div>
-            </div>
-            <div className='row'>
-                <div className='col'>
-                <Link to={"/cart"} style={{width: "100%"}} className="btn btn-secondary  mt-3">Go to Cart</Link>
-                </div>
-                <div className='col'>
-                <button onClick={() => handleCheckout()} style={{width: "100%"}} className="btn btn-primary  mt-3">Place Order</button>
-                </div>
-            </div>
-        </div>
+            </Grid>
+            <Grid item xs={12}>
+                <Stack spacing={2} direction="column" justifyContent={"end"}>
+                    <Button variant="outlined" onClick={() => navigate("/cart")}>Go to Cart</Button>
+                    <Button variant="contained" onClick={handleCheckout}>Place Order</Button>
+                </Stack>
+            </Grid>
+        </>
     );
 }
  

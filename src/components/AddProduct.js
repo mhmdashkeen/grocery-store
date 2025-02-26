@@ -154,6 +154,13 @@ const AddProduct = () => {
       profitPercentage
       }))
   }
+  const loggedInUser = useSelector(state => state.loggedInUser);
+
+  if(loggedInUser && !loggedInUser.isAdmin){
+    return(
+      <h1>You are not authorized to access this page.</h1>
+    )
+  }
     return (
       <Grid container spacing={4}>
         <Grid item xs={12} sm={6}>

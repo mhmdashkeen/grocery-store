@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 import { LoadingButton } from '@mui/lab';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
 const formObject = {
     email: "",
@@ -71,14 +73,17 @@ const Login = () => {
                 name="password"/>
             </Grid>
             <Grid item xs={12} sm={12}>
-                <LoadingButton
-                    loading={loading}
-                    variant="contained"
-                    type="submit"
-                    fullWidth
-                  >
-                <span>Login</span>
-              </LoadingButton>
+                <Stack spacing={2} direction="column" justifyContent={"end"}>
+                    <LoadingButton
+                        loading={loading}
+                        variant="contained"
+                        type="submit"
+                        fullWidth
+                      >
+                      <span>Login</span>
+                    </LoadingButton>
+                    <Button variant="outlined" onClick={() => navigate("/signup")}>Sign up</Button>
+                </Stack>
             </Grid>
           </Grid>
           </form>

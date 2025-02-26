@@ -39,13 +39,13 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.0.12",
     "@headlessui/react": "^1.7.18",
-    "@mui/icons-material": "^6.1.8",
+    "@mui/icons-material": "^6.4.5",
     "@mui/lab": "^5.0.0-alpha.169",
-    "@mui/material": "^6.1.8",
+    "@mui/material": "^6.4.5",
     "@mui/styled-engine-sc": "^6.1.8",
     "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.4.0",

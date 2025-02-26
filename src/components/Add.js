@@ -6,10 +6,10 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import AddProduct from './AddProduct';
 import AddCategory from './AddCategory';
+import { useSelector } from 'react-redux';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
-
   return (
     <div
       role="tabpanel"
@@ -42,11 +42,17 @@ function a11yProps(index) {
 
 export default function BasicTabs() {
   const [value, setValue] = React.useState(0);
+  const loggedInUser = useSelector(state => state.loggedInUser);
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+  if(loggedInUser && !loggedInUser.isAdmin){
+    return(
+      <h1>You are not authorized to access this page.</h1>
+    )
+  }
   return (
       <div className='container'>
         <Box sx={{ width: '100%' }}>

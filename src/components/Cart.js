@@ -1,60 +1,64 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { removeCart } from '../slice/Cart';
-import CartIncDec from './CartIncDec';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid';
+import { Day } from '../utils/helper';
 
-const Cart = ({addRemoveCart, onCheckout}) => {
+
+const Cart = ({onCheckout}) => {
     const cartItems = useSelector(state => state.cart);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    useEffect(() => {
+        localStorage.setItem("carts", JSON.stringify(cartItems));
+    }, [cartItems]);
     if(cartItems.length > 0){
         return (
-            <div className='container'>
+            <>
             {cartItems.map(cart => {
-                    return <div key={cart.id}>
-                            <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 20px", boxShadow: "1px 1px 7px #d3d3d3", marginBottom: "30px", borderRadius: "4px"}}>
-                                <div style={{display: "flex", alignItems: "center"}}>
-                                    <div style={{marginRight: "20px"}}>
-                                        <img style={{width: "180px", height: "180px"}} src="" />
-                                    </div>
+                    return (<div  key={cart.id} style={{padding: "10px", boxShadow: "1px 1px 7px #d3d3d3", marginBottom: "16px", borderRadius: "4px"}}>
+                                <div style={{display: "flex"}}>
+                                    {cart.thumbnail && (<div style={{marginRight: "10px"}}>
+                                        <img style={{width: "80px", height: "80px", border: "1px solid #eee", borderRadius: "2px"}} src={cart.thumbnail} />
+                                    </div>)}
                                     <div>
                                         <div><b>{cart.name}</b></div>
-                                        <div>Price: ${cart.price}</div>
+                                        {cart.description && <div>{cart.description}</div>}
+                                        <div>₹{cart.quantity * (cart.sellPrice - cart.discount)}</div>
+                                        <div>Weight: {cart.quantity} Kg</div>
                                     </div>
                                 </div>
-                                <CartIncDec addRemoveCart={addRemoveCart} product={cart} disableDec={true}/>
-                                <div>
-                                    <div>Total: ${cart.quantity * cart.price}</div>
-                                    {onCheckout !== undefined ?
-                                     "" :
-                                    <div><button onClick={() => dispatch(removeCart(cart.id))} style={{width: "100%"}} className="btn btn-primary  mt-3">Remove</button></div>}
+                                {/* <CartIncDec addRemoveCart={addRemoveCart} product={cart} disableDec={true}/> */}
+                                <div className="">
+                                    Delivery in {new Date().getHours() < 20 ? "same day" : "next day"}, {new Date().getHours() < 20 ? Day[new Date().getDay()] : Day[new Date().getDay() + 1]} : FREE
                                 </div>
-                            </div>
-                        </div>
+                                {onCheckout !== undefined ?
+                                     "" : <Stack spacing={2} direction="row">
+                                    <Button size="small" onClick={() => dispatch(removeCart(cart.id))}>Remove</Button>
+                                </Stack>
+                                }
+                    </div>)
                 })
             }
-            <div style={{textAlign: "right"}}>Subtotal: ${cartItems.map(cart => parseInt(cart.price) * cart.quantity).reduce((a, b) => a + b)}</div>
-            {onCheckout === undefined ? <div className='row'>
-                <div className='col'>
-                <Link to={"/"} style={{width: "100%"}} className="btn btn-secondary  mt-3">Go to Products</Link>
-                </div>
-                <div className='col'>
-                <Link to={"/checkout"} style={{width: "100%"}} className="btn btn-primary  mt-3">Checkout</Link>
-                </div>
-            </div> : ""}
-            </div>
+            <div style={{textAlign: "right"}}>Subtotal: ₹{cartItems.map(cart => parseInt(cart.sellPrice - cart.discount) * cart.quantity).reduce((a, b) => a + b)}</div>
+            {onCheckout === undefined ? 
+            
+            <Grid item xs={12} sm={12}>
+                <Stack spacing={2} direction="row" justifyContent={"end"}>
+                <Button variant="contained" onClick={() => navigate("/checkout")}>Checkout</Button>
+                </Stack>
+            </Grid> : ""}
+            </>
         )
     }
     else{
         return (
-            <div className="container">
-                <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
-                    <img src="" alt="empty-cart-img" width={500}/>
-                    <button className="btn btn-primary" onClick={() => navigate("/products")}>
-                        Go Back to Add Some Products
-                    </button>
-                </div>
-            </div>
+            <Stack spacing={2} direction="row" justifyContent={"center"}>
+                <Button variant="outlined" onClick={() => navigate("/products")}>Go to products</Button>
+            </Stack>
         )  
     }
 }

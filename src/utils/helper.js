@@ -26,3 +26,5 @@ function stringToColor(string) {
       children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
     };
   }
+
+  export const Day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
