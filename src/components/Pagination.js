@@ -1,14 +1,16 @@
-import * as React from 'react';
-import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
-import { useSelector } from 'react-redux';
+import * as React from "react";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+import { useSelector } from "react-redux";
 
-export default function PaginationComponent({handlePagination}) {
-    const [page, setPage] = React.useState(1);
-    const [totalCount, setTotalCount] = React.useState(0);
-    const [pageCount, setPageCount] = React.useState(0);
-    const pageSize = 25;
-    const filteredProductsList = useSelector(state => state.products.filteredProductsList);
+export default function PaginationComponent({ handlePagination }) {
+  const [page, setPage] = React.useState(1);
+  const [totalCount, setTotalCount] = React.useState(0);
+  const [pageCount, setPageCount] = React.useState(0);
+  const pageSize = 25;
+  const filteredProductsList = useSelector(
+    (state) => state.products.filteredProductsList
+  );
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -24,11 +26,18 @@ export default function PaginationComponent({handlePagination}) {
   }, [totalCount]);
 
   // console.log("Page", page, "TOT", totalCount, "AA", pageCount, "aa", filteredProductsList);
-  if(totalCount <= pageSize){
+  if (totalCount <= pageSize) {
     return null;
   }
   return (
-    <Stack spacing={2} sx={{ marginTop: "1.5rem", justifyContent: "center", alignItems: "center"}}>
+    <Stack
+      spacing={2}
+      sx={{
+        marginTop: "1.5rem",
+        justifyContent: "center",
+        alignItems: "center"
+      }}
+    >
       <Pagination count={pageCount} page={page} onChange={handleChange} />
     </Stack>
   );

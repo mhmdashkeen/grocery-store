@@ -5,8 +5,8 @@ import "@testing-library/jest-dom";
 import { Routes } from "react-router";
 
 it("should render Home component", () => {
-    render(<Home/>);
+  render(<Home />);
 
-    const heading  = screen.getByRole("heading");
-    expect(heading).toBeInTheDocument();
-})
+  const heading = screen.getByRole("heading");
+  expect(heading).toBeInTheDocument();
+});

@@ -1,21 +1,29 @@
-import * as React from 'react';
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import Autocomplete from '@mui/material/Autocomplete';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFilteredProducts } from '../slice/Product';
+import * as React from "react";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import Autocomplete from "@mui/material/Autocomplete";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilteredProducts } from "../slice/Product";
 
 export default function Search() {
-    const dispatch = useDispatch();
-    const products = useSelector(state => state.products.productsLists);
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products.productsLists);
 
-    const handleAutocomplete = (value) => {
-        const filterProducts = products.filter((p) => p.name === value);
-        dispatch(setFilteredProducts(filterProducts));
-    };
+  const handleAutocomplete = (value) => {
+    const filterProducts = products.filter((p) => p.name === value);
+    dispatch(setFilteredProducts(filterProducts));
+  };
 
   return (
-    <Stack spacing={2} sx={{ maxWidth: 500, width: "100%", justifySelf: "end", marginBottom: "1.5rem" }}>
+    <Stack
+      spacing={2}
+      sx={{
+        maxWidth: 500,
+        width: "100%",
+        justifySelf: "end",
+        marginBottom: "1.5rem"
+      }}
+    >
       <Autocomplete
         freeSolo
         disableClearable
@@ -29,8 +37,8 @@ export default function Search() {
             slotProps={{
               input: {
                 ...params.InputProps,
-                type: 'search',
-              },
+                type: "search"
+              }
             }}
             onChange={() => dispatch(setFilteredProducts(products))}
           />

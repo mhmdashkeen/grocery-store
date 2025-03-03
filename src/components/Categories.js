@@ -1,26 +1,41 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getProducts, getProductsCategory } from '../slice/Product';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { getCategory } from '../slice/Category';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getProducts, getProductsCategory } from "../slice/Product";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { getCategory } from "../slice/Category";
 
 const Categories = () => {
-    const categories = useSelector(state => state.products.productsCategories);
-    const categories1 = useSelector(state => state.category);
-    const dispatch = useDispatch();
-    useEffect(() => {
-            dispatch(getCategory());
-    }, []);
-    console.log("categories1", categories1);
-    return (
-        <div className="col">
-            <h3>Categories</h3>
-            <button type="button" className="btn btn-outline-primary btn-block" onClick={() => dispatch(getProducts())}>All Products</button>
-            {categories.map(cat => <button key={cat.id} type="button" className="btn btn-outline-primary btn-block" onClick={() => dispatch(getProductsCategory(cat.value))}>{cat.value.charAt(0).toUpperCase() + cat.value.slice(1)}</button>)}
-            {/* <FormControl variant="standard" sx={{ m: 1, minWidth: "100%" }}>
+  const categories = useSelector((state) => state.products.productsCategories);
+  const categories1 = useSelector((state) => state.category);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getCategory());
+  }, []);
+  console.log("categories1", categories1);
+  return (
+    <div className="col">
+      <h3>Categories</h3>
+      <button
+        type="button"
+        className="btn btn-outline-primary btn-block"
+        onClick={() => dispatch(getProducts())}
+      >
+        All Products
+      </button>
+      {categories.map((cat) => (
+        <button
+          key={cat.id}
+          type="button"
+          className="btn btn-outline-primary btn-block"
+          onClick={() => dispatch(getProductsCategory(cat.value))}
+        >
+          {cat.value.charAt(0).toUpperCase() + cat.value.slice(1)}
+        </button>
+      ))}
+      {/* <FormControl variant="standard" sx={{ m: 1, minWidth: "100%" }}>
                 <InputLabel id="demo-simple-select-standard-label">Categories</InputLabel>
                 <Select
                 labelId="demo-simple-select-standard-label"
@@ -39,8 +54,8 @@ const Categories = () => {
                 <MenuItem value={30}>Thirty</MenuItem>
                 </Select>
             </FormControl>             */}
-        </div>
-    );
-}
- 
+    </div>
+  );
+};
+
 export default React.memo(Categories);
