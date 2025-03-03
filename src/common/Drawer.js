@@ -15,7 +15,7 @@ export default function TemporaryDrawer({ open, closeDrawer }) {
     closeDrawer(true);
     setTimeout(() => {
       navigate(nav);
-    }, 100);
+    }, 500);
   };
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={closeDrawer(false)}>

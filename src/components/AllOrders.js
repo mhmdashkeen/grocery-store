@@ -85,7 +85,7 @@ function AllOrders() {
     <>
       {orders.loading && <ScreenLoader inline="inline" />}
       {orders.orderLists?.map((allOrders) => (
-        <><Box
+        <Box
               key={allOrders.id}
               sx={{
                   border: 1,
@@ -178,7 +178,6 @@ function AllOrders() {
                 </Box>
             </Modal>
         </Box>
-        </>
     ))}
  </>    
 );

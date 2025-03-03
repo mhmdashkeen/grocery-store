@@ -102,7 +102,6 @@ const Signup = () => {
             }}
             name="email"
           />
-          />
         </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
@@ -121,7 +120,6 @@ const Signup = () => {
               }));
             }}
             name="password"
-          />
           />
         </Grid>
         <Grid item xs={12} sm={12}>
