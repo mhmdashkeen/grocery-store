@@ -11,9 +11,6 @@ const Cart = ({ onCheckout }) => {
   const cartItems = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  useEffect(() => {
-    localStorage.setItem("carts", JSON.stringify(cartItems));
-  }, [cartItems]);
   if (cartItems.length > 0) {
     return (
       <>
@@ -58,23 +55,23 @@ const Cart = ({ onCheckout }) => {
                     </div>
                   ))}
                 <div>
-                <div>
+                  <div>
                     <b>{cart.name}</b>
                   </div>
-                {cart.description && <div>{cart.description}</div>}
-                <div>₹{cart.quantity * (cart.sellPrice - cart.discount)}</div>
-                <div>Weight: {cart.quantity} Kg</div>
+                  {cart.description && <div>{cart.description}</div>}
+                  <div>₹{cart.quantity * (cart.sellPrice - cart.discount)}</div>
+                  <div>Weight: {cart.quantity} Kg</div>
+                </div>
               </div>
-            </div>
-            {/* <CartIncDec addRemoveCart={addRemoveCart} product={cart} disableDec={true}/> */}
+              {/* <CartIncDec addRemoveCart={addRemoveCart} product={cart} disableDec={true}/> */}
               <div className="">
                 Delivery in{" "}
-              {new Date().getHours() < 20 ? "same day" : "next day"},{" "}
-              {new Date().getHours() < 20
-                ? Day[new Date().getDay()]
-                : Day[new Date().getDay() + 1]}{" "}
+                {new Date().getHours() < 20 ? "same day" : "next day"},{" "}
+                {new Date().getHours() < 20
+                  ? Day[new Date().getDay()]
+                  : Day[new Date().getDay() + 1]}{" "}
               </div>
-              {onCheckout && (
+              {!onCheckout && (
                 <Stack spacing={2} direction="row">
                   <Button
                     size="small"
@@ -97,9 +94,12 @@ const Cart = ({ onCheckout }) => {
         </div>
         {onCheckout === undefined ? (
           <Grid item xs={12} sm={12}>
-            <Stack spacing={2} direction="row" justifyContent={"end"}>
+            <Stack spacing={2} direction="column" justifyContent={"end"}>
               <Button variant="contained" onClick={() => navigate("/checkout")}>
                 Checkout
+              </Button>
+              <Button variant="outlined" onClick={() => navigate("/products")}>
+                Go to products
               </Button>
             </Stack>
           </Grid>

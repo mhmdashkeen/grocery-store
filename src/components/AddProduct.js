@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addProduct, editProduct } from "../slice/Product";
 import { useLocation, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
-import { styled } from "@mui/system";
 import Stack from "@mui/material/Stack";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import { getCategory } from "../slice/Category";
 import { LoadingButton } from "@mui/lab";
 import Grid from "@mui/material/Grid";
+import { AddProductSchema } from "./../utils/Schema";
+import { useFormik } from "formik";
+import { showSnackbar } from "../slice/Snackbar";
+import { Alert } from "@mui/material";
 
 const formObject = {
   name: "",
@@ -23,7 +24,6 @@ const formObject = {
   sellPrice: 0,
   category: "",
   discount: 0,
-  thumbnail: "",
   brand: "",
   weight: "",
   available: "yes",
@@ -33,95 +33,55 @@ const formObject = {
   thumbnail: ""
 };
 const AddProduct = () => {
-  const blue = {
-    100: "#DAECFF",
-    200: "#b6daff",
-    400: "#3399FF",
-    500: "#007FFF",
-    600: "#0072E5",
-    900: "#003A75"
-  };
-
-  const grey = {
-    50: "#F3F6F9",
-    100: "#E5EAF2",
-    200: "#DAE2ED",
-    300: "#C7D0DD",
-    400: "#B0B8C4",
-    500: "#9DA8B7",
-    600: "#6B7A90",
-    700: "#434D5B",
-    800: "#303740",
-    900: "#1C2025"
-  };
-
-  const Textarea = styled(BaseTextareaAutosize)(
-    ({ theme }) => `
-    box-sizing: border-box;
-    width: 100%;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.5;
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
-    background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-    border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
-    box-shadow: 0px 2px 2px ${theme.palette.mode === "dark" ? grey[900] : grey[50]};
-
-    &:hover {
-      border-color: ${blue[400]};
-    }
-
-    &:focus {
-      border-color: ${blue[400]};
-      box-shadow: 0 0 0 3px ${theme.palette.mode === "dark" ? blue[600] : blue[200]};
-    }
-
-    // firefox
-    &:focus-visible {
-      outline: 0;
-    }
-  `
-  );
-
   const { state } = useLocation();
-  const categories = useSelector((state) => state.category);
   const dispatch = useDispatch();
   const [formValues, setFormValues] = useState(
     state !== null ? state.product : formObject
   );
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: ""
+  });
+  const handleNotify = (isOpen, message = "") => {
+    setNotify(() => ({
+      isOpen,
+      message
+    }));
+  };
 
-  const saveProduct = () => {
+  const saveProduct = (values) => {
     setLoading(true);
+    handleNotify(false);
     if (state !== null) {
-      dispatch(editProduct(formValues))
+      dispatch(editProduct(values))
         .unwrap()
         .then(() => {
-          setFormValues(formObject);
           setLoading(false);
           console.log("Success");
+          dispatch(showSnackbar("Updated product successfully."));
         })
         .catch((e) => {
-          console.log("API Error", e.message);
           setLoading(false);
-          toast(e.message);
+          handleNotify(
+            true,
+            "There is a problem on our end. Please try after sometime."
+          );
         });
     } else {
-      dispatch(addProduct(formValues))
+      dispatch(addProduct(values))
         .unwrap()
         .then(() => {
-          setFormValues(formObject);
           setLoading(false);
-          console.log("Success");
+          dispatch(showSnackbar("Added product successfully."));
         })
         .catch((e) => {
-          console.log("API Error", e.message);
           setLoading(false);
-          toast(e.message);
+          handleNotify(
+            true,
+            "There is a problem on our end. Please try after sometime."
+          );
         });
     }
   };
@@ -130,12 +90,6 @@ const AddProduct = () => {
     setFormValues(formObject);
     navigate("/");
   };
-
-  useEffect(() => {
-    if (categories.length === 0) {
-      dispatch(getCategory());
-    }
-  }, []);
 
   const handleSellChange = (e) => {
     const profit = e.target.value - formValues.buyPrice;
@@ -162,233 +116,238 @@ const AddProduct = () => {
   };
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
+  const formik = useFormik({
+    initialValues: state !== null ? state.product : formObject,
+    validationSchema: AddProductSchema,
+    onSubmit: (values) => {
+      console.log("Values", values);
+      saveProduct(values);
+    }
+  });
+
   if (loggedInUser && !loggedInUser.isAdmin) {
     return <h1>You are not authorized to access this page.</h1>;
   }
   return (
-    <Grid container spacing={4}>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Name"
-          variant="standard"
-          type="text"
-          id="name"
-          required
-          value={formValues.name}
-          onChange={(e) => {
-            setFormValues((prevState) => ({
-              ...prevState,
-              name: e.target.value
-            }));
-          }}
-          name="name"
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Buy price"
-          variant="standard"
-          type="number"
-          id="buyPrice"
-          required
-          value={formValues.buyPrice}
-          onChange={(e) => {
-            setFormValues((prevState) => ({
-              ...prevState,
-              buyPrice: parseInt(e.target.value)
-            }));
-          }}
-          onBlur={(e) => handleBuyChange(e)}
-          name="buyPrice"
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Sell Price"
-          variant="standard"
-          type="number"
-          id="sellPrice"
-          required
-          value={formValues.sellPrice}
-          onChange={(e) =>
-            setFormValues((prevState) => ({
-              ...prevState,
-              sellPrice: parseInt(e.target.value)
-            }))
-          }
-          onBlur={(e) => handleSellChange(e)}
-          name="sellPrice"
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Profit"
-          variant="standard"
-          type="number"
-          id="profit"
-          value={formValues.profit}
-          readonly
-          name="profit"
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Profit Percentage"
-          variant="standard"
-          type="text"
-          id="profitPercentage"
-          value={formValues.profitPercentage}
-          readonly
-          name="profitPercentage"
-        />
-      </Grid>
-      {parseInt(formValues.profitPercentage) > 10 ? (
+    <form
+      onSubmit={formik.handleSubmit}
+      style={{ display: "flex", justifyContent: "center" }}
+      noValidate
+    >
+      <Grid container spacing={4}>
+        {notify.isOpen && (
+          <Grid item xs={12} sm={12}>
+            <Alert severity="error" onClose={() => handleNotify(false)}>
+              {notify.message}
+            </Alert>
+          </Grid>
+        )}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
+            fullWidth
+            label="Name"
+            variant="standard"
+            type="text"
+            id="name"
+            required
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            onFocus={() => handleNotify(false)}
+            name="name"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            error={formik.touched.buyPrice && Boolean(formik.errors.buyPrice)}
+            helperText={formik.touched.buyPrice && formik.errors.buyPrice}
+            fullWidth
+            label="Buy price"
+            variant="standard"
+            type="number"
+            id="buyPrice"
+            required
+            value={formik.values.buyPrice}
+            onChange={formik.handleChange}
+            onBlur={(e) => {
+              handleBuyChange(e);
+              formik.handleBlur();
+            }}
+            onFocus={() => handleNotify(false)}
+            name="buyPrice"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            error={formik.touched.sellPrice && Boolean(formik.errors.sellPrice)}
+            helperText={formik.touched.sellPrice && formik.errors.sellPrice}
+            fullWidth
+            label="Sell Price"
+            variant="standard"
+            type="number"
+            id="sellPrice"
+            required
+            value={formik.values.sellPrice}
+            onChange={formik.handleChange}
+            onBlur={(e) => {
+              handleSellChange(e);
+              formik.handleBlur();
+            }}
+            onFocus={() => handleNotify(false)}
+            name="sellPrice"
+          />
+        </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
-            label="Discount"
+            label="Profit"
             variant="standard"
             type="number"
-            id="discount"
-            required
-            value={formValues.discount}
-            onChange={(e) => {
-              setFormValues((prevState) => ({
-                ...prevState,
-                discount: e.target.value
-              }));
-            }}
-            name="discount"
+            id="profit"
+            value={formik.values.profit}
+            readOnly
+            name="profit"
           />
         </Grid>
-      ) : (
-        ""
-      )}
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Brand"
-          variant="standard"
-          type="text"
-          id="brand"
-          required
-          value={formValues.brand}
-          onChange={(e) => {
-            setFormValues((prevState) => ({
-              ...prevState,
-              brand: e.target.value
-            }));
-          }}
-          name="brand"
-        />
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="Profit Percentage"
+            variant="standard"
+            type="text"
+            id="profitPercentage"
+            value={formik.values.profitPercentage}
+            readOnly
+            name="profitPercentage"
+            onFocus={() => handleNotify(false)}
+          />
+        </Grid>
+        {parseInt(formValues.profitPercentage) > 10 ? (
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Discount"
+              variant="standard"
+              type="number"
+              id="discount"
+              required
+              value={formik.values.discount}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              onFocus={() => handleNotify(false)}
+              name="discount"
+            />
+          </Grid>
+        ) : (
+          ""
+        )}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="Brand"
+            variant="standard"
+            type="text"
+            id="brand"
+            required
+            value={formik.values.brand}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            onFocus={() => handleNotify(false)}
+            name="brand"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            error={formik.touched.weight && Boolean(formik.errors.weight)}
+            helperText={formik.touched.weight && formik.errors.weight}
+            fullWidth
+            label="Weight"
+            variant="standard"
+            type="number"
+            id="weight"
+            required
+            value={formik.values.weight}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            onFocus={() => handleNotify(false)}
+            name="weight"
+          />
+          <p>In gram</p>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl variant="standard" fullWidth>
+            <InputLabel id="available">Available</InputLabel>
+            <Select
+              labelId="available"
+              id="available"
+              value={formik.values.available}
+              onChange={formik.handleChange}
+              onFocus={() => handleNotify(false)}
+              label="available"
+              name="available"
+            >
+              <MenuItem key="yes" value="yes">
+                Yes
+              </MenuItem>
+              <MenuItem key="no" value="no">
+                No
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl variant="standard" fullWidth>
+            <InputLabel id="saleIn">SaleIn</InputLabel>
+            <Select
+              labelId="saleIn"
+              id="saleIn"
+              value={formik.values.saleIn}
+              onChange={formik.handleChange}
+              onFocus={() => handleNotify(false)}
+              label="saleIn"
+              name="saleIn"
+            >
+              <MenuItem key="kg" value="kg">
+                KG
+              </MenuItem>
+              <MenuItem key="packet" value="packet">
+                Packet
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="Thumbnail"
+            variant="standard"
+            type="url"
+            id="thumbnail"
+            value={formik.values.thumbnail}
+            onChange={formik.handleChange}
+            onFocus={() => handleNotify(false)}
+            name="thumbnail"
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <Stack spacing={2} direction="row" justifyContent={"end"}>
+            <Button variant="outlined" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <LoadingButton
+              loading={loading}
+              variant="contained"
+              type="submit"
+              disabled={!formik.isValid}
+            >
+              <span>{state !== null ? "Update" : "Add"} Product</span>
+            </LoadingButton>
+          </Stack>
+        </Grid>
       </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Weight"
-          variant="standard"
-          type="text"
-          id="weight"
-          required
-          value={formValues.weight}
-          onChange={(e) => {
-            setFormValues((prevState) => ({
-              ...prevState,
-              weight: e.target.value
-            }));
-          }}
-          name="weight"
-        />
-        <p>In gram</p>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <FormControl variant="standard" fullWidth>
-          <InputLabel id="available">Available</InputLabel>
-          <Select
-            labelId="available"
-            id="available"
-            value={formValues.available}
-            onChange={(e) =>
-              setFormValues((prevState) => ({
-                ...prevState,
-                available: e.target.value
-              }))
-            }
-            label="available"
-            name="available"
-          >
-            <MenuItem key="yes" value="yes">
-              Yes
-            </MenuItem>
-            <MenuItem key="no" value="no">
-              No
-            </MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <FormControl variant="standard" fullWidth>
-          <InputLabel id="saleIn">SaleIn</InputLabel>
-          <Select
-            labelId="saleIn"
-            id="saleIn"
-            value={formValues.saleIn}
-            onChange={(e) =>
-              setFormValues((prevState) => ({
-                ...prevState,
-                saleIn: e.target.value
-              }))
-            }
-            label="saleIn"
-            name="saleIn"
-          >
-            <MenuItem key="kg" value="kg">
-              KG
-            </MenuItem>
-            <MenuItem key="packet" value="packet">
-              Packet
-            </MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          label="Thumbnail"
-          variant="standard"
-          type="url"
-          id="thumbnail"
-          required
-          value={formValues.thumbnail}
-          onChange={(e) => {
-            setFormValues((prevState) => ({
-              ...prevState,
-              thumbnail: e.target.value
-            }));
-          }}
-          name="thumbnail"
-        />
-      </Grid>
-      <Grid item xs={12} sm={12}>
-        <Stack spacing={2} direction="row" justifyContent={"end"}>
-          <Button variant="outlined" onClick={handleCancel}>
-            Cancel
-          </Button>
-          <LoadingButton
-            loading={loading}
-            variant="contained"
-            onClick={saveProduct}
-          >
-            <span>{state !== null ? "Update" : "Add"} Product</span>
-          </LoadingButton>
-        </Stack>
-      </Grid>
-    </Grid>
+    </form>
   );
 };
 

@@ -10,7 +10,6 @@ export const updateUserWithCart = createAsyncThunk(
   "products/updateUserCart",
   async (data) => {
     const user = JSON.parse(sessionStorage.getItem("userData"));
-    console.log("DATA", data, "USER", user.uid);
     await addDoc(orderRef, { ...data, uid: user.uid });
   }
 );
@@ -36,22 +35,8 @@ const cartSlice = createSlice({
       }
       return [...state, { ...action.payload, quantity: 1 }];
     },
-    updateCart: (state, action) => {
-      const cartList = JSON.parse(localStorage.getItem("carts"));
-      const indexCart = cartList.findIndex(
-        (cart) => cart.id === action.payload.id
-      );
-      cartList.splice(indexCart, 1, action.payload);
-      localStorage.setItem("carts", JSON.stringify(cartList));
-      state.splice(indexCart, 1, action.payload);
-    },
     removeCart: (state, action) => {
-      const cartList = JSON.parse(localStorage.getItem("carts"));
-      const indexCart = cartList.findIndex(
-        (cart) => cart.id === action.payload
-      );
-      cartList.splice(indexCart, 1);
-      localStorage.setItem("carts", JSON.stringify(cartList));
+      const indexCart = state.findIndex((cart) => cart.id === action.payload);
       state.splice(indexCart, 1);
     }
   }

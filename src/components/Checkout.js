@@ -16,7 +16,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const handleCheckout = () => {
     if(loggedInUser?.address){
-      const addOrders = {uid: loggedInUser.uid, orders: [...cartItems], createdAt: new Date().toISOString(true), isDelivered: false};
+      const addOrders = {uid: loggedInUser.uid, orders: [...cartItems], createdAt: new Date().toISOString(true), isDelivered: false, orderID: "OD" + Date.now() };
       dispatch(updateUserWithOrders(addOrders))
         .unwrap()
         .then((data) => {

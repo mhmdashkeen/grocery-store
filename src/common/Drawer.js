@@ -32,6 +32,11 @@ export default function TemporaryDrawer({ open, closeDrawer }) {
                 <ListItemText primary={"All Orders"} />
               </ListItemButton>
             </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => navigationFunc("/users")}>
+                <ListItemText primary={"All Users"} />
+              </ListItemButton>
+            </ListItem>
           </>
         )}
         <ListItem disablePadding>

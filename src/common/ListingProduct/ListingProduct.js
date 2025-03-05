@@ -126,7 +126,7 @@ function ListingProduct(props) {
                   </div>
                 )}
               </div>
-              {saleIn === "kg" && (
+              {loggedInUser?.isAdmin && saleIn === "kg" && (
                 <>
                   <span>g/₹</span>
                   <Switch

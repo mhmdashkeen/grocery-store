@@ -55,16 +55,6 @@ export const updateUserAddress = createAsyncThunk(
   }
 );
 
-export const updateUserWithOrders = createAsyncThunk(
-  "user/updateUserAddress",
-  async (data) => {
-    const usersDoc = doc(db, "users", data.id);
-    const aa = await updateDoc(usersDoc, data);
-    console.log("AA", aa);
-    return data;
-  }
-);
-
 const userSlice = createSlice({
   name: "user",
   initialState,

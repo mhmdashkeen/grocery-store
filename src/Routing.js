@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./common/ProtectedRoute";
 import { useSelector } from "react-redux";
 
-// const About = lazy(() => import('./components/AboutUs'));
 const Home = lazy(() => import("./components/Home"));
 const ProductListing = lazy(() => import("./components/ProductListing"));
 const SingleProduct = lazy(() => import("./components/SingleProduct"));
@@ -17,6 +16,7 @@ const Cart = lazy(() => import("./components/Cart"));
 const Add = lazy(() => import("./components/Add"));
 const AddAdresses = lazy(() => import("./components/AddAdresses"));
 const AllOrders = lazy(() => import("./components/AllOrders"));
+const AllUsers = lazy(() => import("./components/AllUsers"));
 
 const Routing = () => {
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -54,6 +54,14 @@ const Routing = () => {
         element={
           <ProtectedRoute>
             <AllOrders />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <ProtectedRoute>
+            <AllUsers />
           </ProtectedRoute>
         }
       />

@@ -25,7 +25,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     right: 0,
     top: 0,
     border: `2px solid ${theme.palette.background.paper}`,
-    padding: "0 4px",
+    padding: "0 4px"
   }
 }));
 
@@ -55,7 +55,7 @@ function HeaderNav() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -94,7 +94,7 @@ function HeaderNav() {
                 fontWeight: 700,
                 letterSpacing: ".3rem",
                 color: "inherit",
-                textDecoration: "none",
+                textDecoration: "none"
               }}
             >
               LOGO
@@ -115,6 +115,12 @@ function HeaderNav() {
                 >
                   All Orders
                 </Button>
+                <Button
+                  onClick={() => navigate("/users")}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  All Users
+                </Button>
               </>
             )}
             <Button
@@ -132,31 +138,67 @@ function HeaderNav() {
               </Button>
             )}
           </Box>
-          {carts.length > 0 ? <IconButton aria-label="cart" sx={{color: "white"}} onClick={() => navigate("/cart")}>
-            <StyledBadge badgeContent={carts.length} color="primary">
-              <ShoppingCartOutlinedIcon />
-            </StyledBadge>
-          </IconButton> : <IconButton
+          {carts.length > 0 ? (
+            <IconButton
               aria-label="cart"
               sx={{ color: "white" }}
               onClick={() => navigate("/cart")}
             >
-            <ShoppingCartOutlinedIcon />
-          </IconButton>
-          }
-          {!loggedInUser && <><Button
+              <StyledBadge badgeContent={carts.length} color="primary">
+                <ShoppingCartOutlinedIcon />
+              </StyledBadge>
+            </IconButton>
+          ) : (
+            <IconButton
+              aria-label="cart"
+              sx={{ color: "white" }}
+              onClick={() => navigate("/cart")}
+            >
+              <ShoppingCartOutlinedIcon />
+            </IconButton>
+          )}
+          {!loggedInUser && (
+            <>
+              <Button
                 onClick={() => navigate("/login")}
-            sx={{ my: 2, color: "white", display:  { xs: "none", md: "block" } }}
-          >
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: { xs: "none", md: "block" }
+                }}
+              >
                 Login
               </Button>
-          <Button
+              <Button
                 onClick={() => navigate("/signup")}
-            sx={{ my: 2, color: "white", display:  { xs: "none", md: "block" } }}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: { xs: "none", md: "block" }
+                }}
               >
                 SignUp
-          </Button></>}
-          {loggedInUser && (<>{loggedInUser.photoURL ? <img src={loggedInUser.photoURL} alt="Avatar" style={{width: "38px", height: "38px", borderRadius: "50%", marginLeft: "8px", cursor: "pointer"}} onClick={handleOpenUserMenu}/> : <Avatar onClick={handleOpenUserMenu}/>}
+              </Button>
+            </>
+          )}
+          {loggedInUser && (
+            <>
+              {loggedInUser.photoURL ? (
+                <img
+                  src={loggedInUser.photoURL}
+                  alt="Avatar"
+                  style={{
+                    width: "38px",
+                    height: "38px",
+                    borderRadius: "50%",
+                    marginLeft: "8px",
+                    cursor: "pointer"
+                  }}
+                  onClick={handleOpenUserMenu}
+                />
+              ) : (
+                <Avatar onClick={handleOpenUserMenu} />
+              )}
               <Menu
                 sx={{ mt: "45px" }}
                 id="menu-appbar"
@@ -173,21 +215,24 @@ function HeaderNav() {
                 open={anchorElUser}
                 onClose={handleCloseUserMenu}
               >
-              {loggedInUser.displayName ? (
+                {loggedInUser.displayName ? (
                   <Typography sx={{ padding: "6px 16px" }}>
                     {loggedInUser.displayName}
                   </Typography>
                 ) : (
                   ""
                 )}
-              <Typography sx={{ padding: "6px 16px" }}>{loggedInUser.email}</Typography>
-              <MenuItem
-                onClick={() => {
-                  handleCloseUserMenu();
-                  logout();
-                }}>
-                <Typography sx={{ textAlign: "center" }}>Logout</Typography>
-              </MenuItem>
+                <Typography sx={{ padding: "6px 16px" }}>
+                  {loggedInUser.email}
+                </Typography>
+                <MenuItem
+                  onClick={() => {
+                    handleCloseUserMenu();
+                    logout();
+                  }}
+                >
+                  <Typography sx={{ textAlign: "center" }}>Logout</Typography>
+                </MenuItem>
               </Menu>
             </>
           )}

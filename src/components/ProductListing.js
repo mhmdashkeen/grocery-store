@@ -35,7 +35,7 @@ const ProductListing = () => {
   }, [filteredProductsList]);
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <h3>Shop by Collection</h3>
+      <div>Shop by Collection</div>
       <p>
         Each season, we collaborate with world class designers to create a
         collection inspired by natural world.
