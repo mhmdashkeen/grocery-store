@@ -97,9 +97,7 @@ function ListingProduct(props) {
                 </div>
                 {discount > 0 ? (
                   <>
-                    <div className="listing--price--mrp">
-                      M.R.P.&nbsp;&nbsp;₹{sellPrice}
-                    </div>
+                    <div className="listing--price--mrp">₹{sellPrice}</div>
                     <div className="listing--price--discount">
                       (₹{discount} off)
                     </div>
@@ -119,14 +117,13 @@ function ListingProduct(props) {
                       : weight / 1000 + ` ${saleIn}`}
                   </span>
                 </div>
-                {brand && (
-                  <div className="listing--details--brand">
-                    <span className="listing--size--span">Brand:</span>{" "}
-                    <span className="weight">{brand}</span>
-                  </div>
-                )}
+
+                <div className="listing--details--brand">
+                  <span className="listing--size--span">Brand:</span>{" "}
+                  <span className="weight">{brand ? brand : "NA"}</span>
+                </div>
               </div>
-              {loggedInUser?.isAdmin && saleIn === "kg" && (
+              {loggedInUser?.isAdmin && (
                 <>
                   <span>g/₹</span>
                   <Switch
