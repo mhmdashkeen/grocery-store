@@ -44,7 +44,8 @@ function ListingProduct(props) {
     saleIn,
     weight,
     id,
-    brand
+    brand,
+    available
   } = props.data;
   const [rate, setRate] = React.useState(10);
   const [gram, setGram] = React.useState(Math.floor((10 / sellPrice) * 1000));
@@ -107,17 +108,16 @@ function ListingProduct(props) {
                 )}
               </div>
               <div className="listing--details--weight">
-                <div>
-                  <span className="listing--size--span">Weight:</span>{" "}
-                  <span className="weight">
-                    {saleIn !== "kg"
-                      ? weight < 1000
-                        ? weight + " g"
-                        : weight / 1000 + " Kg"
-                      : weight / 1000 + ` ${saleIn}`}
-                  </span>
-                </div>
-
+                <span className="listing--size--span">
+                  {saleIn !== "kg" ? "Qty:" : "Weight:"}
+                </span>{" "}
+                <span className="weight">
+                  {saleIn !== "kg"
+                    ? 1
+                    : weight < 1000
+                      ? weight + " g"
+                      : weight / 1000 + " Kg"}
+                </span>
                 <div className="listing--details--brand">
                   <span className="listing--size--span">Brand:</span>{" "}
                   <span className="weight">{brand ? brand : "NA"}</span>
@@ -240,17 +240,21 @@ function ListingProduct(props) {
                 </div>
               </>
             )}
-            <Stack spacing={2}>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  dispatch(addtocart(props.data));
-                  dispatch(showSnackbar("Item added to cart."));
-                }}
-              >
-                Add to cart
-              </Button>
-            </Stack>
+            {available === "no" ? (
+              <div className="out-of-stock">Out of stock</div>
+            ) : (
+              <Stack spacing={2}>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    dispatch(addtocart(props.data));
+                    dispatch(showSnackbar("Item added to cart."));
+                  }}
+                >
+                  Add to cart
+                </Button>
+              </Stack>
+            )}
           </div>
         </div>
       </Item>

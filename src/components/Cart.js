@@ -6,75 +6,93 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import { Day } from "../utils/helper";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const Cart = ({ onCheckout }) => {
   const cartItems = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const totalAmount = cartItems
+    .map((cart) => parseInt(cart.sellPrice - cart.discount) * cart.quantity)
+    .reduce((a, b) => a + b, 0);
+
   if (cartItems.length > 0) {
     return (
       <>
+        {!onCheckout && <h3>My Cart</h3>}
         {cartItems.map((cart) => {
           return (
             <div
               key={cart.id}
-              style={{
-                padding: "10px",
-                boxShadow: "1px 1px 7px #d3d3d3",
-                marginBottom: "16px",
-                borderRadius: "4px"
-              }}
+              className="listing--container listing--container-cart"
             >
               <div style={{ display: "flex" }}>
                 {cart.thumbnail &&
                   (!onCheckout ? (
                     <Link to={`/products/${cart.id}`} state={{ product: cart }}>
-                      <div style={{ marginRight: "10px" }}>
-                        <img
-                          style={{
-                            width: "80px",
-                            height: "80px",
-                            border: "1px solid #eee",
-                            borderRadius: "2px"
-                          }}
-                          src={cart.thumbnail}
-                        />
-                      </div>
-                    </Link>
-                  ) : (
-                    <div style={{ marginRight: "10px" }}>
-                      <img
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                          border: "1px solid #eee",
-                          borderRadius: "2px"
-                        }}
+                      <LazyLoadImage
+                        className="listing-card-image"
+                        alt={cart.name}
                         src={cart.thumbnail}
                       />
-                    </div>
+                    </Link>
+                  ) : (
+                    <LazyLoadImage
+                      className="listing-card-image"
+                      alt={cart.name}
+                      src={cart.thumbnail}
+                    />
                   ))}
                 <div>
-                  <div>
-                    <b>{cart.name}</b>
-                  </div>
+                  <div className="listing--name">{cart.name}</div>
                   {cart.description && <div>{cart.description}</div>}
-                  <div>₹{cart.quantity * (cart.sellPrice - cart.discount)}</div>
-                  <div>Weight: {cart.quantity} Kg</div>
+                  <div className="listing--price">
+                    <div className="listing--price--original">
+                      ₹{cart.quantity * (cart.sellPrice - cart.discount)}
+                    </div>
+                    {cart.discount > 0 ? (
+                      <>
+                        <div className="listing--price--mrp">
+                          ₹{cart.sellPrice}
+                        </div>
+                        <div className="listing--price--discount">
+                          (₹{cart.discount} off)
+                        </div>
+                      </>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  <div className="listing--details--weight">
+                    <span className="listing--size--span">
+                      {cart.saleIn !== "kg" ? "Qty:" : "Weight:"}
+                    </span>{" "}
+                    <span className="weight">
+                      {cart.saleIn !== "kg"
+                        ? 1
+                        : cart.weight < 1000
+                          ? cart.weight + " g"
+                          : cart.weight / 1000 + " Kg"}
+                    </span>
+                  </div>
                 </div>
               </div>
-              {/* <CartIncDec addRemoveCart={addRemoveCart} product={cart} disableDec={true}/> */}
-              <div className="">
-                Delivery in{" "}
-                {new Date().getHours() < 20 ? "same day" : "next day"},{" "}
-                {new Date().getHours() < 20
-                  ? Day[new Date().getDay()]
-                  : Day[new Date().getDay() + 1]}{" "}
+              <div className="delivery-text">
+                <span>
+                  Delivery in{" "}
+                  {new Date().getHours() < 20 ? "same day" : "next day"},{" "}
+                  {new Date().getHours() < 20
+                    ? Day[new Date().getDay()]
+                    : Day[new Date().getDay() + 1]}{" "}
+                  :
+                </span>{" "}
+                <span className="listing--price--discount">FREE</span>
               </div>
               {!onCheckout && (
                 <Stack spacing={2} direction="row">
                   <Button
                     size="small"
+                    variant="outlined"
                     onClick={() => dispatch(removeCart(cart.id))}
                   >
                     Remove
@@ -84,22 +102,67 @@ const Cart = ({ onCheckout }) => {
             </div>
           );
         })}
-        <div style={{ textAlign: "right" }}>
-          Subtotal: ₹
-          {cartItems
-            .map(
-              (cart) => parseInt(cart.sellPrice - cart.discount) * cart.quantity
-            )
-            .reduce((a, b) => a + b)}
+        <div className="price-detail-section">
+          <h4>Price Details</h4>
+          <div className="price-section">
+            <span>
+              Price (
+              {cartItems.length > 1 ? cartItems.length + " items" : "1 item"})
+            </span>
+            <span>₹{totalAmount}</span>
+          </div>
+          {/* <div className="price-section">
+            <span>Discount</span>
+            <span className="listing--price--discount">
+              -₹50A
+              {
+                (cartItems.reduce((acc, cart) => acc + parseInt(cart.discount)),
+                0)
+              }
+            </span>
+          </div> */}
+          <div className="price-section">
+            <span>Delivery Charges</span>
+            <span>
+              <span className="listing--price--mrp">₹20</span>{" "}
+              <span className="listing--price--discount">FREE Deliery</span>
+            </span>
+          </div>
+          <div className="price-section total-amount">
+            <span>Total Amount</span>
+            <span>₹{totalAmount}</span>
+          </div>
         </div>
         {onCheckout === undefined ? (
-          <Grid item xs={12} sm={12}>
+          <Grid
+            item
+            xs={6}
+            sm={6}
+            sx={{
+              position: "fixed",
+              width: "100%",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              display: "flex",
+              padding: "0.5rem 1rem",
+              borderTop: "1px solid #eee",
+              alignItems: "center",
+              justifyContent: "space-between",
+              backgroundColor: "#fff"
+            }}
+          >
+            <Stack
+              spacing={2}
+              direction="column"
+              justifyContent={"end"}
+              sx={{ fontSize: "24px", fontWeight: 500 }}
+            >
+              ₹{totalAmount}
+            </Stack>
             <Stack spacing={2} direction="column" justifyContent={"end"}>
               <Button variant="contained" onClick={() => navigate("/checkout")}>
                 Checkout
-              </Button>
-              <Button variant="outlined" onClick={() => navigate("/products")}>
-                Go to products
               </Button>
             </Stack>
           </Grid>

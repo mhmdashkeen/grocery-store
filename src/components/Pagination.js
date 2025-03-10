@@ -7,7 +7,7 @@ export default function PaginationComponent({ handlePagination }) {
   const [page, setPage] = React.useState(1);
   const [totalCount, setTotalCount] = React.useState(0);
   const [pageCount, setPageCount] = React.useState(0);
-  const pageSize = 25;
+  const pageSize = 100;
   const filteredProductsList = useSelector(
     (state) => state.products.filteredProductsList
   );

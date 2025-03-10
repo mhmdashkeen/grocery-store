@@ -30,7 +30,7 @@ const ProductListing = () => {
   }, []);
 
   useEffect(() => {
-    const slicedProduct = filteredProductsList.slice(0, 25);
+    const slicedProduct = filteredProductsList.slice(0, 100);
     setProducts(slicedProduct);
   }, [filteredProductsList]);
   return (

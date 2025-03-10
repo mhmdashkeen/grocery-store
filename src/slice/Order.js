@@ -14,7 +14,8 @@ import {
 
 const initialState = {
   orderLists: null,
-  loading: false
+  loading: false,
+  allOrderLists: []
 };
 const orderRef = collection(db, "orders");
 
@@ -89,7 +90,7 @@ const orderSlice = createSlice({
         if (state.loading) {
           state.loading = false;
         }
-        state.orderLists = action.payload;
+        state.allOrderLists = action.payload;
       })
       .addCase(deleteOrder.pending, (state, action) => {
         if (!state.loading) {

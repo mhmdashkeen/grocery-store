@@ -36,7 +36,7 @@
     z-index: 0;
     min-height: 135px;
     max-height: 135px;
-    object-fit: cover;
+    object-fit: contain;
     width: 100%;
 }
 .listing--link{
@@ -99,6 +99,7 @@
     white-space: nowrap;
     overflow: hidden;
     padding: 0;
+    font-weight: 500;
 }
 .listing--price--original{
     display: inline-block;
@@ -111,7 +112,7 @@
     color: #878787;
 }
 .listing--price--discount{
-    color: #388e3c;
+    color: rgb(46, 125, 50);
     font-size: 14px;
     letter-spacing: -.2px;
     display: inline-block;
