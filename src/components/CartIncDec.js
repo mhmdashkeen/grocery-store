@@ -1,30 +1,40 @@
+import { Box, Button } from "@mui/material";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { addtocart, decreaseCartQuantity } from "../slice/Cart";
 
-const CartIncDec = ({ addRemoveCart, product, disableDec }) => {
+const CartIncDec = ({ product }) => {
+  const dispatch = useDispatch();
+
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        minWidth: "100px"
+        minWidth: "100px",
+        marginTop: "5px"
       }}
     >
-      <button
-        disabled={disableDec !== undefined && product.quantity === 1}
-        onClick={() => addRemoveCart(product, "decrease")}
-        className="btn btn-secondary"
+      <Button
+        size="small"
+        variant="outlined"
+        sx={{ minWidth: "28px" }}
+        onClick={() => dispatch(decreaseCartQuantity(product))}
+        disabled={product.quantity === 1}
       >
         -
-      </button>
+      </Button>
       <span>{product.quantity}</span>
-      <button
-        onClick={() => addRemoveCart(product, "increase")}
-        className="btn btn-secondary"
+      <Button
+        size="small"
+        variant="contained"
+        sx={{ minWidth: "28px" }}
+        onClick={() => dispatch(addtocart(product))}
       >
         +
-      </button>
-    </div>
+      </Button>
+    </Box>
   );
 };
 

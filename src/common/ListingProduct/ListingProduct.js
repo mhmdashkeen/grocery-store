@@ -20,6 +20,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { LoadingButton } from "@mui/lab";
 import { addtocart } from "../../slice/Cart";
 import { showSnackbar } from "../../slice/Snackbar";
+import imagePlaceholder from "../../../public/assets/img-placeholder.webp";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -55,6 +56,7 @@ function ListingProduct(props) {
   const [checked, setChecked] = React.useState(true);
   const loggedInUser = useSelector((state) => state.loggedInUser);
   const deleteLoading = useSelector((state) => state.products.deleteLoading);
+  const cartItems = useSelector((state) => state.cart);
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };
@@ -70,24 +72,23 @@ function ListingProduct(props) {
     boxShadow: 24,
     padding: "10px"
   };
-  // console.log("PROPS", props.data);
+  const showGotoCart = cartItems.find((elem) => elem.id === id);
   return (
     <Grid size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
       <Item>
         <div className="listing--container">
           <div className="listing--link">
             <Link to={`/products/${id}`} state={{ product: props.data }}>
-              {thumbnail && (
-                <div className="listing--image--container">
-                  <div className="listing--image--div">
-                    <LazyLoadImage
-                      className="listing--image"
-                      alt={name}
-                      src={thumbnail}
-                    />
-                  </div>
+              <div className="listing--image--container">
+                <div className="listing--image--div">
+                  <LazyLoadImage
+                    className="listing--image"
+                    alt={name}
+                    src={thumbnail || imagePlaceholder}
+                    style={{ objectFit: `${!thumbnail && "cover"}` }}
+                  />
                 </div>
-              )}
+              </div>
             </Link>
             <div className="listing--details--section">
               {category && <div className="listing--category">{category}</div>}
@@ -244,15 +245,26 @@ function ListingProduct(props) {
               <div className="out-of-stock">Out of stock</div>
             ) : (
               <Stack spacing={2}>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    dispatch(addtocart(props.data));
-                    dispatch(showSnackbar("Item added to cart."));
-                  }}
-                >
-                  Add to cart
-                </Button>
+                {!showGotoCart ? (
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      dispatch(addtocart(props.data));
+                      dispatch(showSnackbar("Item added to cart."));
+                    }}
+                  >
+                    Add to cart
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      navigate("/cart");
+                    }}
+                  >
+                    Go to cart
+                  </Button>
+                )}
               </Stack>
             )}
           </div>

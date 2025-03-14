@@ -208,4 +208,4 @@ function AllOrders() {
   );
 }
 
-export default AllOrders;
+export default React.memo(AllOrders);

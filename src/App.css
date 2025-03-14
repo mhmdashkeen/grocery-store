@@ -248,13 +248,13 @@ h3{
     margin-left: 8px;
 }
 .listing--price{
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 .listing--details--brand{
     margin-top: 5px;
 }
 .out-of-stock{
-  line-height: 36px;
+  line-height: 33px;
   font-weight: 500;
   color: rgb(211, 47, 47);
 }
@@ -307,8 +307,23 @@ h3{
 .listing-card-image{
   width: 80px;
   height: 80px;
+  max-width: 80px;
+  min-height: 80px;
   border: 1px solid #eee;
   border-radius: 2px;
   margin-right: 10px;
   object-fit: contain;
+}
+
+.order-success-container{
+  height: calc(100vh - 125px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.order-head{
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 0;
 }

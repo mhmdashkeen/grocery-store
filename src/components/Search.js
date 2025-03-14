@@ -5,7 +5,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilteredProducts } from "../slice/Product";
 
-export default function Search() {
+function Search() {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.productsLists);
 
@@ -47,3 +47,5 @@ export default function Search() {
     </Stack>
   );
 }
+
+export default React.memo(Search);

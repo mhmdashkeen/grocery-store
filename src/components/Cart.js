@@ -7,6 +7,9 @@ import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import { Day } from "../utils/helper";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { showSnackbar } from "../slice/Snackbar";
+import CartIncDec from "./CartIncDec";
+import imagePlaceholder from "../../public/assets/img-placeholder.webp";
 
 const Cart = ({ onCheckout }) => {
   const cartItems = useSelector((state) => state.cart);
@@ -27,22 +30,23 @@ const Cart = ({ onCheckout }) => {
               className="listing--container listing--container-cart"
             >
               <div style={{ display: "flex" }}>
-                {cart.thumbnail &&
-                  (!onCheckout ? (
-                    <Link to={`/products/${cart.id}`} state={{ product: cart }}>
-                      <LazyLoadImage
-                        className="listing-card-image"
-                        alt={cart.name}
-                        src={cart.thumbnail}
-                      />
-                    </Link>
-                  ) : (
+                {!onCheckout ? (
+                  <Link to={`/products/${cart.id}`} state={{ product: cart }}>
                     <LazyLoadImage
                       className="listing-card-image"
                       alt={cart.name}
-                      src={cart.thumbnail}
+                      src={cart.thumbnail || imagePlaceholder}
+                      style={{ objectFit: `${!cart.thumbnail && "cover"}` }}
                     />
-                  ))}
+                  </Link>
+                ) : (
+                  <LazyLoadImage
+                    className="listing-card-image"
+                    alt={cart.name}
+                    src={cart.thumbnail || imagePlaceholder}
+                    style={{ objectFit: `${!cart.thumbnail && "cover"}` }}
+                  />
+                )}
                 <div>
                   <div className="listing--name">{cart.name}</div>
                   {cart.description && <div>{cart.description}</div>}
@@ -69,12 +73,13 @@ const Cart = ({ onCheckout }) => {
                     </span>{" "}
                     <span className="weight">
                       {cart.saleIn !== "kg"
-                        ? 1
+                        ? cart.quantity
                         : cart.weight < 1000
-                          ? cart.weight + " g"
-                          : cart.weight / 1000 + " Kg"}
+                          ? cart.weight * cart.quantity + " g"
+                          : (cart.weight * cart.quantity) / 1000 + " Kg"}
                     </span>
                   </div>
+                  {!onCheckout && <CartIncDec product={cart} />}
                 </div>
               </div>
               <div className="delivery-text">
@@ -93,7 +98,10 @@ const Cart = ({ onCheckout }) => {
                   <Button
                     size="small"
                     variant="outlined"
-                    onClick={() => dispatch(removeCart(cart.id))}
+                    onClick={() => {
+                      dispatch(removeCart(cart.id));
+                      dispatch(showSnackbar("Item removed from cart."));
+                    }}
                   >
                     Remove
                   </Button>

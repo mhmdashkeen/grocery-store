@@ -35,6 +35,13 @@ const cartSlice = createSlice({
       }
       return [...state, { ...action.payload, quantity: 1 }];
     },
+    decreaseCartQuantity: (state, action) => {
+      return state.map((p) =>
+        p.id === action.payload.id ? { ...p, quantity: p.quantity - 1 } : p
+      );
+      // }
+      // return [...state, { ...action.payload, quantity: 1 }];
+    },
     removeCart: (state, action) => {
       const indexCart = state.findIndex((cart) => cart.id === action.payload);
       state.splice(indexCart, 1);
@@ -42,7 +49,12 @@ const cartSlice = createSlice({
   }
 });
 
-export const { clearCart, addtocart, removeCart, updateCart, getCart } =
-  cartSlice.actions;
+export const {
+  clearCart,
+  addtocart,
+  removeCart,
+  decreaseCartQuantity,
+  getCart
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

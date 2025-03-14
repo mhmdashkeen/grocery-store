@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserWithOrders } from "../slice/Order";
 import { clearCart } from "../slice/Cart";
@@ -8,11 +8,15 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { showSnackbar } from "../slice/Snackbar";
+import { LoadingButton } from "@mui/lab";
+import { Alert } from "@mui/material";
 
 const Checkout = () => {
   const cartItems = useSelector((state) => state.cart);
+  const orders = useSelector((state) => state.orders);
   const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.loggedInUser);
+  const [isShowOrderPlaced, setIsShowOrderPlaced] = useState(false);
   const navigate = useNavigate();
   const handleCheckout = () => {
     if (loggedInUser?.address) {
@@ -26,12 +30,17 @@ const Checkout = () => {
       dispatch(updateUserWithOrders(addOrders))
         .unwrap()
         .then((data) => {
-          console.log("Response", data);
           dispatch(clearCart());
-          navigate("/orders");
+          setIsShowOrderPlaced(true);
+          setTimeout(() => {
+            navigate("/orders");
+          }, 5000);
         })
         .catch((e) => {
-          console.log("API Error", e);
+          handleNotify(
+            true,
+            "There is a problem on our end. Please try after sometime."
+          );
         });
     } else {
       dispatch(showSnackbar("Please add address then checkout"));
@@ -40,9 +49,41 @@ const Checkout = () => {
   const totalAmount = cartItems
     .map((cart) => parseInt(cart.sellPrice - cart.discount) * cart.quantity)
     .reduce((a, b) => a + b, 0);
+
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: ""
+  });
+  const handleNotify = (isOpen, message = "") => {
+    setNotify(() => ({
+      isOpen,
+      message
+    }));
+  };
+
+  console.log("Orders", orders);
+
+  if (isShowOrderPlaced) {
+    return (
+      <div className="order-success-container">
+        <h3 className="order-head">Order placed successfully.</h3>
+        <p>It will automatically redirects in 5 seconds.</p>
+        <Button variant="outlined" onClick={() => navigate("/orders")}>
+          My orders
+        </Button>
+      </div>
+    );
+  }
   return (
     <>
       <h3>Checkout</h3>
+      {notify.isOpen && (
+        <Grid item xs={12} sm={12}>
+          <Alert severity="error" onClose={() => handleNotify(false)}>
+            {notify.message}
+          </Alert>
+        </Grid>
+      )}
       <Grid item xs={12}>
         {loggedInUser?.address ? (
           <>
@@ -108,13 +149,17 @@ const Checkout = () => {
           ₹{totalAmount}
         </Stack>
         <Stack spacing={2} direction="column" justifyContent={"end"}>
-          <Button variant="contained" onClick={handleCheckout}>
+          <LoadingButton
+            loading={orders.loading}
+            variant="contained"
+            onClick={handleCheckout}
+          >
             Place Order
-          </Button>
+          </LoadingButton>
         </Stack>
       </Grid>
     </>
   );
 };
 
-export default Checkout;
+export default React.memo(Checkout);

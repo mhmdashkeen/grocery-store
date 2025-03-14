@@ -2,7 +2,7 @@ import React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-export default function ScreenLoader({ inline }) {
+function ScreenLoader({ inline }) {
   if (inline) {
     return (
       <Box
@@ -32,3 +32,5 @@ export default function ScreenLoader({ inline }) {
     </Box>
   );
 }
+
+export default React.memo(ScreenLoader);

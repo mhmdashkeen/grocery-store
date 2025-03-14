@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getOrders } from "../slice/Order";
 import ScreenLoader from "./ScreenLoader";
-import { Day } from "../utils/helper";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import imagePlaceholder from "../../public/assets/img-placeholder.webp";
 
 const Orders = () => {
   const orders = useSelector((state) => state.orders);
@@ -44,18 +44,15 @@ const Orders = () => {
           to={`/products/${order.id}`}
           state={{ product: order }}
           style={{ display: "block", color: "inherit", textDecoration: "none" }}
+          key={order.id}
         >
-          <div
-            key={order.id}
-            className="listing--container listing--container-cart"
-          >
+          <div className="listing--container listing--container-cart">
             <div style={{ display: "flex" }}>
-              {order.thumbnail && (
-                <LazyLoadImage
-                  className="listing-card-image"
-                  src={order.thumbnail}
-                />
-              )}
+              <LazyLoadImage
+                className="listing-card-image"
+                src={order.thumbnail || imagePlaceholder}
+                style={{ objectFit: `${!order.thumbnail && "cover"}` }}
+              />
               <div>
                 <div className="listing--name">{order.name}</div>
                 <span
@@ -73,4 +70,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default React.memo(Orders);

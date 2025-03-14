@@ -92,6 +92,21 @@ const orderSlice = createSlice({
         }
         state.allOrderLists = action.payload;
       })
+      .addCase(updateUserWithOrders.pending, (state, action) => {
+        if (!state.loading) {
+          state.loading = true;
+        }
+      })
+      .addCase(updateUserWithOrders.rejected, (state, action) => {
+        if (state.loading) {
+          state.loading = false;
+        }
+      })
+      .addCase(updateUserWithOrders.fulfilled, (state, action) => {
+        if (state.loading) {
+          state.loading = false;
+        }
+      })
       .addCase(deleteOrder.pending, (state, action) => {
         if (!state.loading) {
           state.loading = true;

@@ -3,7 +3,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useSelector } from "react-redux";
 
-export default function PaginationComponent({ handlePagination }) {
+function PaginationComponent({ handlePagination }) {
   const [page, setPage] = React.useState(1);
   const [totalCount, setTotalCount] = React.useState(0);
   const [pageCount, setPageCount] = React.useState(0);
@@ -42,3 +42,5 @@ export default function PaginationComponent({ handlePagination }) {
     </Stack>
   );
 }
+
+export default React.memo(PaginationComponent);

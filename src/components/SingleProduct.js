@@ -97,4 +97,4 @@ const SingleProduct = () => {
   );
 };
 
-export default SingleProduct;
+export default React.memo(SingleProduct);
