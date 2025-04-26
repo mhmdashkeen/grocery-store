@@ -39,8 +39,29 @@ const cartSlice = createSlice({
       return state.map((p) =>
         p.id === action.payload.id ? { ...p, quantity: p.quantity - 1 } : p
       );
-      // }
-      // return [...state, { ...action.payload, quantity: 1 }];
+    },
+    decreaseGram: (state, action) => {
+      return state.map((p) =>
+        p.id === action.payload.id ? { ...p, quantity: p.quantity - 0.25 } : p
+      );
+    },
+    increaseGram: (state, action) => {
+      const existingProduct = state.find((p) => p.id === action.payload.id);
+      if (existingProduct) {
+        return state.map((p) =>
+          p.id === action.payload.id ? { ...p, quantity: p.quantity + 0.25 } : p
+        );
+      }
+      return [...state, { ...action.payload, quantity: 1 }];
+    },
+    updateCartGram: (state, action) => {
+      const indexCart = state.findIndex(
+        (cart) => cart.id === action.payload.id
+      );
+      state[indexCart].weight = action.payload.updatedWeight;
+      console.log("Action", action.payload);
+      console.log("State", indexCart);
+      return state;
     },
     removeCart: (state, action) => {
       const indexCart = state.findIndex((cart) => cart.id === action.payload);
@@ -54,7 +75,10 @@ export const {
   addtocart,
   removeCart,
   decreaseCartQuantity,
-  getCart
+  decreaseGram,
+  increaseGram,
+  getCart,
+  updateCartGram
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

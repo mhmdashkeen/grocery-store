@@ -1,7 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { removeCart } from "../slice/Cart";
+import {
+  decreaseGram,
+  removeCart,
+  updateCartGram,
+  increaseGram
+} from "../slice/Cart";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
@@ -10,15 +15,23 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { showSnackbar } from "../slice/Snackbar";
 import CartIncDec from "./CartIncDec";
 import imagePlaceholder from "../../public/assets/img-placeholder.webp";
+import { Box, TextField } from "@mui/material";
 
 const Cart = ({ onCheckout }) => {
+  const [gramValue, setGramValue] = useState(1000);
   const cartItems = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const totalAmountWithoutDicount = cartItems
+    .map((cart) => parseInt(cart.sellPrice) * cart.quantity)
+    .reduce((a, b) => a + b, 0);
   const totalAmount = cartItems
     .map((cart) => parseInt(cart.sellPrice - cart.discount) * cart.quantity)
     .reduce((a, b) => a + b, 0);
-
+  const discountAmount = cartItems
+    .map((cart) => parseInt(cart.discount) * cart.quantity)
+    .reduce((a, b) => a + b, 0);
+  console.log("cartitems", cartItems);
   if (cartItems.length > 0) {
     return (
       <>
@@ -60,7 +73,7 @@ const Cart = ({ onCheckout }) => {
                           ₹{cart.sellPrice}
                         </div>
                         <div className="listing--price--discount">
-                          (₹{cart.discount} off)
+                          (₹{cart.discount * cart.quantity} off)
                         </div>
                       </>
                     ) : (
@@ -79,7 +92,58 @@ const Cart = ({ onCheckout }) => {
                           : (cart.weight * cart.quantity) / 1000 + " Kg"}
                     </span>
                   </div>
-                  {!onCheckout && <CartIncDec product={cart} />}
+                  {!onCheckout && cart.saleIn !== "kg" && (
+                    <CartIncDec product={cart} />
+                  )}
+                  {!onCheckout && cart.saleIn === "kg" && (
+                    // <TextField
+                    //   label="Weight in gram"
+                    //   variant="standard"
+                    //   type="number"
+                    //   step
+                    //   value={gramValue}
+                    //   onChange={(e) => setGramValue(e.target.value)}
+                    // onBlur={(e) => {
+                    //   const updateCartWeight = {
+                    //     id: cart.id,
+                    //     updatedWeight: e.target.value
+                    //   };
+                    //   console.log(updateCartWeight, "Before");
+                    //   dispatch(updateCartGram(updateCartWeight));
+                    // }}
+                    // onFocus={() => {}}
+                    // />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        minWidth: "100px",
+                        marginTop: "5px"
+                      }}
+                    >
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        sx={{ minWidth: "28px" }}
+                        onClick={() => dispatch(decreaseGram(cart))}
+                        disabled={cart.quantity === 0.25}
+                      >
+                        -
+                      </Button>
+                      <span style={{ padding: "0 10px" }}>
+                        {cart.quantity * parseInt(cart.weight)} Gram
+                      </span>
+                      <Button
+                        size="small"
+                        variant="contained"
+                        sx={{ minWidth: "28px" }}
+                        onClick={() => dispatch(increaseGram(cart))}
+                      >
+                        +
+                      </Button>
+                    </Box>
+                  )}
                 </div>
               </div>
               <div className="delivery-text">
@@ -117,28 +181,30 @@ const Cart = ({ onCheckout }) => {
               Price (
               {cartItems.length > 1 ? cartItems.length + " items" : "1 item"})
             </span>
-            <span>₹{totalAmount}</span>
+            <span>₹{totalAmountWithoutDicount}</span>
           </div>
-          {/* <div className="price-section">
-            <span>Discount</span>
-            <span className="listing--price--discount">
-              -₹50A
-              {
-                (cartItems.reduce((acc, cart) => acc + parseInt(cart.discount)),
-                0)
-              }
-            </span>
-          </div> */}
+          {discountAmount > 0 && (
+            <div className="price-section">
+              <span>Discount</span>
+              <span className="listing--price--discount">
+                -₹{discountAmount}
+              </span>
+            </div>
+          )}
           <div className="price-section">
             <span>Delivery Charges</span>
-            <span>
-              <span className="listing--price--mrp">₹20</span>{" "}
-              <span className="listing--price--discount">FREE Deliery</span>
-            </span>
+            {totalAmount > 499 ? (
+              <span>
+                <span className="listing--price--mrp">₹20</span>{" "}
+                <span className="listing--price--discount">FREE Deliery</span>
+              </span>
+            ) : (
+              <span className="listing--price--discount">₹20</span>
+            )}
           </div>
           <div className="price-section total-amount">
             <span>Total Amount</span>
-            <span>₹{totalAmount}</span>
+            <span>₹{totalAmount > 499 ? totalAmount : totalAmount + 20}</span>
           </div>
         </div>
         {onCheckout === undefined ? (
@@ -166,7 +232,7 @@ const Cart = ({ onCheckout }) => {
               justifyContent={"end"}
               sx={{ fontSize: "24px", fontWeight: 500 }}
             >
-              ₹{totalAmount}
+              ₹{totalAmount > 499 ? totalAmount : totalAmount + 20}
             </Stack>
             <Stack spacing={2} direction="column" justifyContent={"end"}>
               <Button variant="contained" onClick={() => navigate("/checkout")}>
